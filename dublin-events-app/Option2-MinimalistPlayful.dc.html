@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f8f7f4; }
+    a { color: #6b5b95; text-decoration: none; }
+    a:hover { color: #5a4876; }
+  </style>
+</helmet>
+
+<!-- Minimal Header -->
+<div style="background: white; padding: 24px 0; border-bottom: 1px solid #e8e4df;">
+  <div style="max-width: 1400px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; justify-content: space-between;">
+    <div style="font-size: 24px; font-weight: 800; color: #2d2621;">
+      🎪 Events
+    </div>
+    <button style="background: #6b5b95; color: white; border: none; padding: 10px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">Sign In</button>
+  </div>
+</div>
+
+<!-- Main -->
+<div style="max-width: 1400px; margin: 0 auto; padding: 48px 16px; display: grid; grid-template-columns: 260px 1fr; gap: 48px;">
+
+  <!-- Sidebar -->
+  <div>
+    <input type="text" placeholder="Search events" style="width: 100%; padding: 12px 16px; border: 1px solid #d9d3cc; border-radius: 8px; font-size: 14px; font-family: inherit; margin-bottom: 32px; background: white;" />
+
+    <div style="display: flex; flex-direction: column; gap: 32px;">
+      <!-- Date Section -->
+      <div>
+        <h3 style="font-size: 11px; font-weight: 800; color: #8b7d73; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;">When</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #5a504a; cursor: pointer; font-weight: 500;">
+            <input type="radio" name="date" checked style="cursor: pointer; accent-color: #6b5b95; width: 16px; height: 16px;" /> This Week
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #5a504a; cursor: pointer; font-weight: 500;">
+            <input type="radio" name="date" style="cursor: pointer; accent-color: #6b5b95; width: 16px; height: 16px;" /> This Month
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #5a504a; cursor: pointer; font-weight: 500;">
+            <input type="radio" name="date" style="cursor: pointer; accent-color: #6b5b95; width: 16px; height: 16px;" /> Anytime
+          </label>
+        </div>
+      </div>
+
+      <!-- Genre Section -->
+      <div>
+        <h3 style="font-size: 11px; font-weight: 800; color: #8b7d73; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;">Category</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #5a504a; cursor: pointer; font-weight: 500;">
+            <input type="checkbox" style="cursor: pointer; accent-color: #6b5b95; width: 16px; height: 16px;" /> Music
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #5a504a; cursor: pointer; font-weight: 500;">
+            <input type="checkbox" style="cursor: pointer; accent-color: #6b5b95; width: 16px; height: 16px;" /> Theater
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #5a504a; cursor: pointer; font-weight: 500;">
+            <input type="checkbox" style="cursor: pointer; accent-color: #6b5b95; width: 16px; height: 16px;" /> Comedy
+          </label>
+        </div>
+      </div>
+
+      <!-- Price Section -->
+      <div>
+        <h3 style="font-size: 11px; font-weight: 800; color: #8b7d73; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;">Price</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #5a504a; cursor: pointer; font-weight: 500;">
+            <input type="checkbox" style="cursor: pointer; accent-color: #6b5b95; width: 16px; height: 16px;" /> Free
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #5a504a; cursor: pointer; font-weight: 500;">
+            <input type="checkbox" checked style="cursor: pointer; accent-color: #6b5b95; width: 16px; height: 16px;" /> €0-€50
+          </label>
+          <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #5a504a; cursor: pointer; font-weight: 500;">
+            <input type="checkbox" style="cursor: pointer; accent-color: #6b5b95; width: 16px; height: 16px;" /> €50+
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div>
+    <div style="margin-bottom: 48px;">
+      <h1 style="font-size: 32px; font-weight: 800; color: #2d2621; margin-bottom: 12px; letter-spacing: -0.5px;">Events in Dublin</h1>
+      <p style="color: #8b7d73; font-size: 16px; font-weight: 500;">Hand-picked events happening near you</p>
+    </div>
+
+    <!-- Events Grid - 2 columns for breathing room -->
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px;">
+
+      <!-- Card 1 -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.08)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #ede4f0 0%, #f0e8e4 100%); display: flex; align-items: center; justify-content: center; font-size: 48px;">🎵</div>
+        <div style="padding: 24px;">
+          <h2 style="font-size: 18px; font-weight: 700; color: #2d2621; margin-bottom: 12px;">The Killers</h2>
+          <p style="font-size: 13px; color: #8b7d73; margin-bottom: 16px; line-height: 1.6;">Live at 3 Arena. A night of iconic hits and new material.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div style="font-size: 12px; color: #8b7d73;">Fri, Sept 20</div>
+            <div style="font-weight: 700; color: #6b5b95;">€45-€120</div>
+          </div>
+          <button style="width: 100%; background: #6b5b95; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px;">Get Tickets</button>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.08)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #fce4ec 0%, #fff0f5 100%); display: flex; align-items: center; justify-content: center; font-size: 48px;">🎭</div>
+        <div style="padding: 24px;">
+          <h2 style="font-size: 18px; font-weight: 700; color: #2d2621; margin-bottom: 12px;">Abbey Theatre</h2>
+          <p style="font-size: 13px; color: #8b7d73; margin-bottom: 16px; line-height: 1.6;">The Playboy of the Western World. A classic reimagined.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div style="font-size: 12px; color: #8b7d73;">Thurs, Sept 12</div>
+            <div style="font-weight: 700; color: #6b5b95;">€25-€60</div>
+          </div>
+          <button style="width: 100%; background: #6b5b95; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px;">Get Tickets</button>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.08)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #fff8dc 0%, #fffacd 100%); display: flex; align-items: center; justify-content: center; font-size: 48px;">😂</div>
+        <div style="padding: 24px;">
+          <h2 style="font-size: 18px; font-weight: 700; color: #2d2621; margin-bottom: 12px;">Comedy Night</h2>
+          <p style="font-size: 13px; color: #8b7d73; margin-bottom: 16px; line-height: 1.6;">Laughter guaranteed. Top comedians from across Ireland.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div style="font-size: 12px; color: #8b7d73;">Sat, Sept 15</div>
+            <div style="font-weight: 700; color: #6b5b95;">€20-€35</div>
+          </div>
+          <button style="width: 100%; background: #6b5b95; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px;">Get Tickets</button>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 16px rgba(0,0,0,0.08)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #e0f2f1 0%, #e1f5fe 100%); display: flex; align-items: center; justify-content: center; font-size: 48px;">🎪</div>
+        <div style="padding: 24px;">
+          <h2 style="font-size: 18px; font-weight: 700; color: #2d2621; margin-bottom: 12px;">Taste of Dublin</h2>
+          <p style="font-size: 13px; color: #8b7d73; margin-bottom: 16px; line-height: 1.6;">Food, wine & music. Three days of culinary celebration.</p>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div style="font-size: 12px; color: #8b7d73;">Sept 22-24</div>
+            <div style="font-weight: 700; color: #6b5b95;">Free</div>
+          </div>
+          <button style="width: 100%; background: #6b5b95; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px;">Learn More</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 48px;">
+      <button style="background: white; color: #6b5b95; border: 2px solid #6b5b95; padding: 12px 32px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px;">See More</button>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

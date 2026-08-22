@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id                String       @id @default(cuid())
+  title             String       @db.VarChar(255)
+  description       String?      @db.Text
+  dateStart         DateTime     @map("date_start")
+  dateEnd           DateTime?    @map("date_end")
+  venue             Venue?       @relation(fields: [venueId], references: [id])
+  venueId           String?      @map("venue_id")
+  genre             String?      @db.VarChar(100)
+  ticketPriceMin    Decimal?     @db.Decimal(10, 2) @map("ticket_price_min")
+  ticketPriceMax    Decimal?     @db.Decimal(10, 2) @map("ticket_price_max")
+  ticketUrl         String?      @db.VarChar(500) @map("ticket_url")
+  imageUrl          String?      @db.VarChar(500) @map("image_url")
+  description2      String?      @db.Text
+  createdAt         DateTime     @default(now()) @map("created_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
+  isActive          Boolean      @default(true) @map("is_active")
+  eventSources      EventSource[]
+
+  @@index([dateStart])
+  @@index([venueId])
+  @@index([genre])
+  @@index([isActive])
+  @@fulltext([title, description])
+  @@map("events")
+}
+
+model Venue {
+  id        String    @id @default(cuid())
+  name      String    @db.VarChar(255)
+  address   String?   @db.VarChar(500)
+  latitude  Decimal?  @db.Decimal(10, 8)
+  longitude Decimal?  @db.Decimal(11, 8)
+  phone     String?   @db.VarChar(20)
+  website   String?   @db.VarChar(500)
+  capacity  Int?
+  createdAt DateTime  @default(now()) @map("created_at")
+  events    Event[]
+
+  @@map("venues")
+}
+
+model Source {
+  id               String        @id @default(cuid())
+  name             String        @db.VarChar(255)
+  url              String        @unique @db.VarChar(500)
+  scraperType      String?       @db.VarChar(50) @map("scraper_type") // 'puppeteer' or 'cheerio'
+  scraperStatus    String?       @default("active") @db.VarChar(50) @map("scraper_status") // 'active', 'broken', 'disabled'
+  lastScrapedAt    DateTime?     @map("last_scraped_at")
+  nextScrapeAt     DateTime?     @map("next_scrape_at")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  eventSources     EventSource[]
+
+  @@map("sources")
+}
+
+model EventSource {
+  eventId        String @map("event_id")
+  sourceId       String @map("source_id")
+  sourceUrl      String? @db.VarChar(500) @map("source_url")
+  sourceEventId  String? @db.VarChar(500) @map("source_event_id")
+  event          Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  source         Source @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+
+  @@id([eventId, sourceId])
+  @@map("event_sources")
+}

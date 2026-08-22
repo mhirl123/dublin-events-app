@@ -1,0 +1,315 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: #f5f7fa; }
+    a { color: #0284c7; text-decoration: none; }
+    a:hover { color: #0369a1; text-decoration: underline; }
+  </style>
+</helmet>
+
+<!-- Header -->
+<div style="background: white; border-bottom: 1px solid #e5e7eb; padding: 16px 0; position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+  <div style="max-width: 1400px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; justify-content: space-between;">
+    <div style="font-size: 28px; font-weight: 700; color: #0284c7; display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 32px;">🎪</span>
+      <span>Dublin Events</span>
+    </div>
+    <div style="display: flex; gap: 24px; align-items: center;">
+      <a href="#" style="color: #1f2937; font-weight: 500;">Browse</a>
+      <a href="#" style="color: #1f2937; font-weight: 500;">About</a>
+      <button style="background: #0284c7; color: white; border: none; padding: 10px 24px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px;">Sign In</button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div style="max-width: 1400px; margin: 0 auto; padding: 32px 16px; display: grid; grid-template-columns: 280px 1fr; gap: 32px;">
+
+  <!-- Left Sidebar - Filters -->
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+
+    <!-- Search Input -->
+    <div>
+      <input type="text" placeholder="Search events..." style="width: 100%; padding: 12px 16px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; font-family: inherit; box-shadow: 0 1px 2px rgba(0,0,0,0.05);" />
+    </div>
+
+    <!-- Filter Card -->
+    <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+      <h2 style="font-size: 18px; font-weight: 700; margin-bottom: 20px; color: #1f2937;">Filters</h2>
+
+      <!-- Date Filter -->
+      <div style="margin-bottom: 24px;">
+        <h3 style="font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Date</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: #374151;">
+            <input type="radio" name="date" style="cursor: pointer;" /> Today
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: #374151;">
+            <input type="radio" name="date" checked style="cursor: pointer;" /> This week
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: #374151;">
+            <input type="radio" name="date" style="cursor: pointer;" /> This month
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: #374151;">
+            <input type="radio" name="date" style="cursor: pointer;" /> Custom
+          </label>
+        </div>
+      </div>
+
+      <!-- Genre Filter -->
+      <div style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #e5e7eb;">
+        <h3 style="font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Genre</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: #374151;">
+            <input type="checkbox" style="cursor: pointer;" /> Music
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: #374151;">
+            <input type="checkbox" style="cursor: pointer;" /> Theater
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: #374151;">
+            <input type="checkbox" style="cursor: pointer;" /> Comedy
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: #374151;">
+            <input type="checkbox" style="cursor: pointer;" /> Sports
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: #374151;">
+            <input type="checkbox" style="cursor: pointer;" /> Festival
+          </label>
+        </div>
+      </div>
+
+      <!-- Price Filter -->
+      <div>
+        <h3 style="font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Price</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: #374151;">
+            <input type="checkbox" style="cursor: pointer;" /> Free
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: #374151;">
+            <input type="checkbox" style="cursor: pointer;" /> €0 - €25
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: #374151;">
+            <input type="checkbox" style="cursor: pointer;" /> €25 - €50
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; color: #374151;">
+            <input type="checkbox" style="cursor: pointer;" /> €50+
+          </label>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Right Content - Events Grid -->
+  <div>
+    <!-- Results Header -->
+    <div style="margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between;">
+      <h1 style="font-size: 24px; font-weight: 700; color: #1f2937;">Events in Dublin</h1>
+      <select style="padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; background: white; font-size: 14px; cursor: pointer;">
+        <option>Nearest date</option>
+        <option>Most popular</option>
+        <option>Price: Low to High</option>
+        <option>Price: High to Low</option>
+      </select>
+    </div>
+
+    <!-- Events Grid -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+
+      <!-- Event Card 1 -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';">
+        <!-- Event Image -->
+        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 600;">Event Image</div>
+
+        <!-- Event Details -->
+        <div style="padding: 16px;">
+          <div style="font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 8px; line-height: 1.4;">The Killers Live Concert</div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; color: #6b7280; font-size: 13px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span>📅</span>
+              <span>Fri, Sept 20 • 8:00 PM</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span>📍</span>
+              <span>3 Arena, Dublin</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+            <span style="font-weight: 700; color: #0284c7; font-size: 16px;">€45 - €120</span>
+            <span style="background: #dbeafe; color: #0284c7; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase;">Music</span>
+          </div>
+
+          <button style="width: 100%; background: #0284c7; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='#0369a1';" onmouseout="this.style.background='#0284c7';">Get Tickets</button>
+        </div>
+      </div>
+
+      <!-- Event Card 2 -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';">
+        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 600;">Event Image</div>
+
+        <div style="padding: 16px;">
+          <div style="font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 8px; line-height: 1.4;">Dublin Comedy Festival</div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; color: #6b7280; font-size: 13px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span>📅</span>
+              <span>Sept 10-17 • 7:30 PM</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span>📍</span>
+              <span>Vicar Street, Dublin</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+            <span style="font-weight: 700; color: #0284c7; font-size: 16px;">€20 - €35</span>
+            <span style="background: #fce7f3; color: #db2777; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase;">Comedy</span>
+          </div>
+
+          <button style="width: 100%; background: #0284c7; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='#0369a1';" onmouseout="this.style.background='#0284c7';">Get Tickets</button>
+        </div>
+      </div>
+
+      <!-- Event Card 3 -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';">
+        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 600;">Event Image</div>
+
+        <div style="padding: 16px;">
+          <div style="font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 8px; line-height: 1.4;">Abbey Theatre: The Playboy</div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; color: #6b7280; font-size: 13px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span>📅</span>
+              <span>Thurs, Sept 12 • 7:00 PM</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span>📍</span>
+              <span>Abbey Theatre, Dublin</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+            <span style="font-weight: 700; color: #0284c7; font-size: 16px;">€25 - €60</span>
+            <span style="background: #f0f9ff; color: #0369a1; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase;">Theater</span>
+          </div>
+
+          <button style="width: 100%; background: #0284c7; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='#0369a1';" onmouseout="this.style.background='#0284c7';">Get Tickets</button>
+        </div>
+      </div>
+
+      <!-- Event Card 4 -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';">
+        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 600;">Event Image</div>
+
+        <div style="padding: 16px;">
+          <div style="font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 8px; line-height: 1.4;">Electric Picnic After Party</div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; color: #6b7280; font-size: 13px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span>📅</span>
+              <span>Sat, Sept 15 • 10:00 PM</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span>📍</span>
+              <span>The Grand Social, Dublin</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+            <span style="font-weight: 700; color: #0284c7; font-size: 16px;">€15 - €30</span>
+            <span style="background: #f0fdf4; color: #16a34a; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase;">Festival</span>
+          </div>
+
+          <button style="width: 100%; background: #0284c7; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='#0369a1';" onmouseout="this.style.background='#0284c7';">Get Tickets</button>
+        </div>
+      </div>
+
+      <!-- Event Card 5 -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';">
+        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 600;">Event Image</div>
+
+        <div style="padding: 16px;">
+          <div style="font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 8px; line-height: 1.4;">Yoga in the Park</div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; color: #6b7280; font-size: 13px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span>📅</span>
+              <span>Sun, Sept 11 • 9:00 AM</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span>📍</span>
+              <span>Phoenix Park, Dublin</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+            <span style="font-weight: 700; color: #0284c7; font-size: 16px;">Free</span>
+            <span style="background: #fefce8; color: #ca8a04; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase;">Workshop</span>
+          </div>
+
+          <button style="width: 100%; background: #0284c7; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='#0369a1';" onmouseout="this.style.background='#0284c7';">Learn More</button>
+        </div>
+      </div>
+
+      <!-- Event Card 6 -->
+      <div style="background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.15)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';">
+        <div style="width: 100%; height: 200px; background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 600;">Event Image</div>
+
+        <div style="padding: 16px;">
+          <div style="font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 8px; line-height: 1.4;">Guinness Jazz Festival</div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; color: #6b7280; font-size: 13px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span>📅</span>
+              <span>Oct 5-8 • Various Times</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span>📍</span>
+              <span>Multiple Venues, Dublin</span>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding-top: 12px; border-top: 1px solid #e5e7eb;">
+            <span style="font-weight: 700; color: #0284c7; font-size: 16px;">€10 - €40</span>
+            <span style="background: #fef2f2; color: #dc2626; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase;">Festival</span>
+          </div>
+
+          <button style="width: 100%; background: #0284c7; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; transition: background 0.2s;" onmouseover="this.style.background='#0369a1';" onmouseout="this.style.background='#0284c7';">Get Tickets</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Load More -->
+    <div style="text-align: center; margin-top: 40px;">
+      <button style="background: white; color: #0284c7; border: 2px solid #0284c7; padding: 12px 32px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 14px; transition: all 0.2s;" onmouseover="this.style.background='#f0f9ff';" onmouseout="this.style.background='white';">Load More Events</button>
+    </div>
+
+  </div>
+
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{"accentColor":{"editor":"color","default":"#0284c7"},"darkMode":{"editor":"boolean","default":false},"showMobile":{"editor":"boolean","default":false}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      accentColor: this.props.accentColor ?? '#0284c7',
+      darkMode: this.props.darkMode ?? false,
+      showMobile: this.props.showMobile ?? false,
+    };
+  }
+}
+</script>
+</body>
+</html>

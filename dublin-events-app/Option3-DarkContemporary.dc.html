@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Roboto, sans-serif; background: #0f0f12; }
+    a { color: #00d9ff; text-decoration: none; }
+    a:hover { color: #00b8cc; }
+  </style>
+</helmet>
+
+<!-- Dark Header with Neon Accent -->
+<div style="background: #1a1a1f; border-bottom: 2px solid #00d9ff; padding: 20px 0;">
+  <div style="max-width: 1400px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; justify-content: space-between;">
+    <div style="font-size: 28px; font-weight: 700; color: white; display: flex; align-items: center; gap: 12px;">
+      <span style="font-size: 32px;">🎉</span>
+      <div style="font-family: 'Courier New', monospace; letter-spacing: 2px;">DUBLIN EVENTS</div>
+    </div>
+    <button style="background: #00d9ff; color: #0f0f12; border: none; padding: 10px 24px; border-radius: 4px; font-weight: 700; cursor: pointer; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Sign In</button>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div style="max-width: 1400px; margin: 0 auto; padding: 32px 16px; display: grid; grid-template-columns: 280px 1fr; gap: 32px;">
+
+  <!-- Sidebar -->
+  <div>
+    <input type="text" placeholder="🔍 Search events..." style="width: 100%; padding: 12px 16px; border: 2px solid #00d9ff; border-radius: 4px; font-size: 14px; font-family: inherit; margin-bottom: 20px; background: #1a1a1f; color: white;" />
+
+    <div style="background: #1a1a1f; border: 1px solid #2a2a2f; border-radius: 4px; padding: 20px;">
+      <h2 style="font-size: 14px; font-weight: 700; margin-bottom: 16px; color: #00d9ff; text-transform: uppercase; letter-spacing: 1px;">⚙️ FILTERS</h2>
+
+      <div style="margin-bottom: 20px;">
+        <h3 style="font-size: 11px; font-weight: 700; color: #888; margin-bottom: 10px; text-transform: uppercase;">When</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #ccc; cursor: pointer;">
+            <input type="radio" name="date" checked style="cursor: pointer; accent-color: #00d9ff;" /> This Week
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #ccc; cursor: pointer;">
+            <input type="radio" name="date" style="cursor: pointer; accent-color: #00d9ff;" /> This Month
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #ccc; cursor: pointer;">
+            <input type="radio" name="date" style="cursor: pointer; accent-color: #00d9ff;" /> Any Time
+          </label>
+        </div>
+      </div>
+
+      <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #2a2a2f;">
+        <h3 style="font-size: 11px; font-weight: 700; color: #888; margin-bottom: 10px; text-transform: uppercase;">Vibe</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          <button style="background: transparent; color: #00d9ff; border: 1px solid #00d9ff; padding: 6px 10px; border-radius: 3px; font-size: 11px; font-weight: 600; cursor: pointer; text-transform: uppercase;">🎵</button>
+          <button style="background: transparent; color: #00d9ff; border: 1px solid #00d9ff; padding: 6px 10px; border-radius: 3px; font-size: 11px; font-weight: 600; cursor: pointer; text-transform: uppercase;">🎭</button>
+          <button style="background: transparent; color: #00d9ff; border: 1px solid #00d9ff; padding: 6px 10px; border-radius: 3px; font-size: 11px; font-weight: 600; cursor: pointer; text-transform: uppercase;">😂</button>
+          <button style="background: transparent; color: #ff006e; border: 1px solid #ff006e; padding: 6px 10px; border-radius: 3px; font-size: 11px; font-weight: 600; cursor: pointer; text-transform: uppercase;">🎪</button>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-size: 11px; font-weight: 700; color: #888; margin-bottom: 10px; text-transform: uppercase;">Budget</h3>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #ccc; cursor: pointer;">
+            <input type="checkbox" style="cursor: pointer; accent-color: #00d9ff;" /> Free
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #ccc; cursor: pointer;">
+            <input type="checkbox" style="cursor: pointer; accent-color: #00d9ff;" /> €0-€25
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #ccc; cursor: pointer;">
+            <input type="checkbox" checked style="cursor: pointer; accent-color: #00d9ff;" /> €25-€60
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: #ccc; cursor: pointer;">
+            <input type="checkbox" style="cursor: pointer; accent-color: #00d9ff;" /> €60+
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid -->
+  <div>
+    <div style="margin-bottom: 24px;">
+      <h1 style="font-size: 32px; font-weight: 900; color: white; margin-bottom: 8px; letter-spacing: -1px; font-family: 'Courier New', monospace;">// EVENTS.DUBLIN()</h1>
+      <p style="color: #888; font-size: 14px; text-transform: uppercase; letter-spacing: 1px;">35 experiences waiting for you</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+
+      <!-- Card 1 -->
+      <div style="background: #1a1a1f; border: 1px solid #2a2a2f; border-radius: 4px; overflow: hidden; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderColor='#00d9ff'; this.style.boxShadow='0 0 20px rgba(0, 217, 255, 0.3)';" onmouseout="this.style.borderColor='#2a2a2f'; this.style.boxShadow='none';">
+        <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #1a0033 0%, #003366 100%); display: flex; align-items: center; justify-content: center; font-size: 48px; border-bottom: 2px solid #00d9ff;">🎵</div>
+        <div style="padding: 16px;">
+          <div style="font-size: 15px; font-weight: 700; color: #00d9ff; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;">The Killers</div>
+          <div style="font-size: 13px; color: #ccc; margin-bottom: 12px;">Live at 3 Arena</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #888; margin-bottom: 12px;">
+            <span>Fri, Sept 20</span>
+            <span style="color: #ff006e; font-weight: 700;">€45-€120</span>
+          </div>
+          <button style="width: 100%; background: #00d9ff; color: #0f0f12; border: none; padding: 10px; border-radius: 3px; font-weight: 700; cursor: pointer; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Get Tickets</button>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div style="background: #1a1a1f; border: 1px solid #2a2a2f; border-radius: 4px; overflow: hidden; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderColor='#ff006e'; this.style.boxShadow='0 0 20px rgba(255, 0, 110, 0.3)';" onmouseout="this.style.borderColor='#2a2a2f'; this.style.boxShadow='none';">
+        <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #330033 0%, #660033 100%); display: flex; align-items: center; justify-content: center; font-size: 48px; border-bottom: 2px solid #ff006e;">🎭</div>
+        <div style="padding: 16px;">
+          <div style="font-size: 15px; font-weight: 700; color: #ff006e; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;">Abbey Theatre</div>
+          <div style="font-size: 13px; color: #ccc; margin-bottom: 12px;">The Playboy of the West</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #888; margin-bottom: 12px;">
+            <span>Thurs, Sept 12</span>
+            <span style="color: #ff006e; font-weight: 700;">€25-€60</span>
+          </div>
+          <button style="width: 100%; background: #ff006e; color: white; border: none; padding: 10px; border-radius: 3px; font-weight: 700; cursor: pointer; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Get Tickets</button>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div style="background: #1a1a1f; border: 1px solid #2a2a2f; border-radius: 4px; overflow: hidden; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.borderColor='#ffd60a'; this.style.boxShadow='0 0 20px rgba(255, 214, 10, 0.3)';" onmouseout="this.style.borderColor='#2a2a2f'; this.style.boxShadow='none';">
+        <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #333300 0%, #663300 100%); display: flex; align-items: center; justify-content: center; font-size: 48px; border-bottom: 2px solid #ffd60a;">😂</div>
+        <div style="padding: 16px;">
+          <div style="font-size: 15px; font-weight: 700; color: #ffd60a; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px;">Comedy Night</div>
+          <div style="font-size: 13px; color: #ccc; margin-bottom: 12px;">At Vicar Street Dublin</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #888; margin-bottom: 12px;">
+            <span>Sat, Sept 15</span>
+            <span style="color: #ffd60a; font-weight: 700;">€20-€35</span>
+          </div>
+          <button style="width: 100%; background: #ffd60a; color: #0f0f12; border: none; padding: 10px; border-radius: 3px; font-weight: 700; cursor: pointer; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Get Tickets</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="text-align: center; margin-top: 40px;">
+      <button style="background: transparent; color: #00d9ff; border: 2px solid #00d9ff; padding: 12px 32px; border-radius: 4px; font-weight: 700; cursor: pointer; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Load More</button>
+    </div>
+  </div>
+
+</div>
+
+</x-dc>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

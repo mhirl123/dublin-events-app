@@ -1,0 +1,54 @@
+{
+  "artboards": [
+    {
+      "file": "Option1-ModernGradient.dc.html",
+      "x": 0,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Option 1: Modern Gradient"
+    },
+    {
+      "file": "Option2-MinimalistPlayful.dc.html",
+      "x": 1600,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Option 2: Minimalist"
+    },
+    {
+      "file": "Option3-DarkContemporary.dc.html",
+      "x": 3200,
+      "y": 0,
+      "w": 1440,
+      "h": 900,
+      "title": "Option 3: Dark Neon"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "note-1",
+      "x": 0,
+      "y": -100,
+      "w": 480,
+      "text": "✨ Option 1: Modern Gradient\nBold gradients, vibrant purples/pinks/oranges, trendy curves, energetic feel"
+    },
+    {
+      "id": "note-2",
+      "x": 1600,
+      "y": -100,
+      "w": 480,
+      "text": "🌿 Option 2: Minimalist\nSoft colors, generous whitespace, warm earthy tones, contemporary simplicity"
+    },
+    {
+      "id": "note-3",
+      "x": 3200,
+      "y": -100,
+      "w": 480,
+      "text": "🌃 Option 3: Dark Neon\nDark background, cyan/pink neon accents, modern & bold, youthful energy"
+    }
+  ],
+  "launch": {
+    "view": "canvas"
+  }
+}

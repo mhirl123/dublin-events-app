@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "dublin-events-app",
   "version": "0.1.0",
   "private": true,
@@ -18,8 +18,6 @@
     "next": "^14.0.0",
     "@prisma/client": "^5.7.0",
     "cheerio": "^1.0.0-rc.12",
-    "playwright": "^1.40.0",
-    "puppeteer": "^21.0.0",
     "bull": "^4.11.4",
     "redis": "^4.6.12",
     "date-fns": "^2.30.0",

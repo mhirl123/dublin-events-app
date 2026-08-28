@@ -1,5 +1,6 @@
-/** @type {import('next').NextConfig} */
+﻿/** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   images: {
     domains: ['ticketmaster.com', 'ticketmaster.ie', 'eventbrite.com'],
   },

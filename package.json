@@ -21,7 +21,6 @@
     "bull": "^4.11.4",
     "redis": "^4.6.12",
     "date-fns": "^2.30.0",
-    "lucene-query-parser": "^1.4.1",
     "fuse.js": "^7.0.0"
   },
   "devDependencies": {

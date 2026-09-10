@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import scraperQueue from '@/lib/queue/bullConfig'
-import { processScrapeJob, ScrapeJobData } from '@/lib/queue/scrapeJobProcessor'
+import { ScrapeJobData } from '@/lib/queue/scrapeJobProcessor'
 
 export async function POST(request: NextRequest) {
   try {

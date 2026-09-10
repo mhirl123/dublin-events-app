@@ -123,14 +123,14 @@ export async function GET() {
           })),
       },
       venues: {
-        top: topVenues.map(v => ({
+        top: topVenues.map((v: any) => ({
           id: v.id,
           name: v.name,
           eventCount: v._count.events,
         })),
       },
       recent: {
-        events: recentEvents.map(e => ({
+        events: recentEvents.map((e: any) => ({
           id: e.id,
           title: e.title,
           date: e.dateStart,

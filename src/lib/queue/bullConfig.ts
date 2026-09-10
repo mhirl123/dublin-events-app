@@ -7,7 +7,6 @@ const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
 // Create Redis clients
 export const redisClient = Redis.createClient({
   url: redisUrl,
-  lazyConnect: true,
 })
 
 // Event handlers for Redis client
@@ -79,28 +78,6 @@ export async function getQueueStatus() {
   } catch (error) {
     console.error('[Queue] Error getting queue status:', error)
     return null
-  }
-}
-
-// Check queue health
-export async function checkQueueHealth() {
-  try {
-    await redisClient.connect()
-    const ping = await redisClient.ping()
-    await redisClient.disconnect()
-
-    return {
-      healthy: ping === 'PONG',
-      redis: ping === 'PONG' ? 'connected' : 'disconnected',
-      error: null,
-    }
-  } catch (error) {
-    console.error('[Queue] Health check error:', error)
-    return {
-      healthy: false,
-      redis: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    }
   }
 }
 

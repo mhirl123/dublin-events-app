@@ -26,14 +26,10 @@ export async function initializeQueue() {
     const ping = await redisClient.ping()
     console.log(`[Queue] Redis connection test: ${ping}`)
 
-    // Process jobs
-    await scraperQueue.process(processScrapeJob)
-    console.log('[Queue] Job processor registered')
-
-    // Set up concurrency (number of jobs processed simultaneously)
+    // Process jobs with concurrency set to 1
     // This should be 1 for scraping to avoid database contention
-    scraperQueue.concurrency = 1
-    console.log('[Queue] Concurrency set to 1')
+    await scraperQueue.process(1, processScrapeJob)
+    console.log('[Queue] Job processor registered with concurrency set to 1')
 
     // Schedule recurring jobs
     await scheduleRecurringScraperJobs(scraperQueue)

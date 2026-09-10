@@ -153,7 +153,7 @@ export async function GET(request: NextRequest) {
     const hasPrevPage = page > 1
 
     return NextResponse.json({
-      events: events.map(event => ({
+      events: events.map((event: any) => ({
         ...event,
         venueName: event.venue?.name,
       })),

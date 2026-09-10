@@ -26,7 +26,7 @@ export class ArenaScraper extends BaseScraper {
       const $ = cheerio.load(html)
 
       // Example parsing (adjust based on actual HTML structure)
-      $('[data-event]').each((index, element) => {
+      $('[data-event]').each((_index, element) => {
         const $el = $(element)
 
         const title = $el.find('[data-title]').text().trim()

@@ -30,7 +30,7 @@ function getRedisClientInstance() {
 }
 
 export const redisClient = new Proxy({} as any, {
-  get: (target, prop) => {
+  get: (_target, prop) => {
     const instance = getRedisClientInstance()
     const value = (instance as any)[prop]
     return typeof value === 'function' ? value.bind(instance) : value

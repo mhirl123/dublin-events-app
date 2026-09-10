@@ -72,7 +72,6 @@ export abstract class BaseScraper {
         }
 
         // Check if event already exists
-        const eventHash = this.hashEvent(event)
         const existingEvent = await this.prisma.event.findFirst({
           where: {
             title: { equals: event.title, mode: 'insensitive' },

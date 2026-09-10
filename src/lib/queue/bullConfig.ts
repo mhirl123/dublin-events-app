@@ -1,11 +1,11 @@
 import Queue from 'bull'
-import Redis from 'redis'
+import { createClient } from 'redis'
 
 // Get Redis connection URL from environment or use default
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
 
 // Create Redis clients
-export const redisClient = Redis.createClient({
+export const redisClient = createClient({
   url: redisUrl,
 })
 

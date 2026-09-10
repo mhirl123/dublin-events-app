@@ -49,7 +49,7 @@ export async function GET() {
 
     // Group by status
     const statusCounts = sourcesWithStats.reduce(
-      (acc, source: any) => {
+      (acc: any, source: any) => {
         acc[source.status || 'unknown'] = (acc[source.status || 'unknown'] || 0) + 1
         return acc
       },

@@ -73,7 +73,6 @@ export async function getQueueStatus() {
       completed: counts.completed,
       failed: counts.failed,
       delayed: counts.delayed,
-      paused: counts.paused,
     }
   } catch (error) {
     console.error('[Queue] Error getting queue status:', error)

@@ -3,20 +3,6 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-interface EventsQuery {
-  search?: string
-  dateFrom?: string
-  dateTo?: string
-  genre?: string
-  genres?: string // Multi-select genres (comma-separated)
-  priceMin?: string
-  priceMax?: string
-  venues?: string
-  sort?: 'date-asc' | 'date-desc' | 'price-asc' | 'price-desc' | 'relevance'
-  page?: string
-  limit?: string
-}
-
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)

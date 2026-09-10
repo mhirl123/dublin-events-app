@@ -17,7 +17,7 @@ export async function GET() {
       },
     })
 
-    const sourcesWithStats = sources.map(source => {
+    const sourcesWithStats = sources.map((source: any) => {
       const lastScrapedAt = source.lastScrapedAt
         ? new Date(source.lastScrapedAt)
         : null
@@ -49,7 +49,7 @@ export async function GET() {
 
     // Group by status
     const statusCounts = sourcesWithStats.reduce(
-      (acc, source) => {
+      (acc, source: any) => {
         acc[source.status || 'unknown'] = (acc[source.status || 'unknown'] || 0) + 1
         return acc
       },

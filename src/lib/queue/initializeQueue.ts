@@ -50,7 +50,7 @@ export async function initializeQueue() {
  * Set up event listeners for queue
  */
 function setupQueueListeners() {
-  scraperQueue.on('error', (error) => {
+  scraperQueue.on('error', (error: Error) => {
     console.error('[Queue Event] Error:', error)
   })
 

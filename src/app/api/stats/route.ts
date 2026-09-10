@@ -115,8 +115,8 @@ export async function GET() {
       },
       genre: {
         distribution: genreDistribution
-          .filter(g => g.genre !== null)
-          .map(g => ({
+          .filter((g: any) => g.genre !== null)
+          .map((g: any) => ({
             name: g.genre,
             count: g._count.id,
             percentage: ((g._count.id / totalEvents) * 100).toFixed(1),

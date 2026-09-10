@@ -29,17 +29,24 @@ export function getRedisClient(): RedisClientType {
   return _redisClient
 }
 
-export const redisClient = new Proxy({} as RedisClientType, {
-  get: (_target, prop) => {
-    const client = getRedisClient()
-    return (client as any)[prop]
+// Export as lazy-initialized object to match initializeQueue.ts usage
+export const redisClient = {
+  connect: () => getRedisClient().connect(),
+  disconnect: () => getRedisClient().disconnect(),
+  ping: () => getRedisClient().ping(),
+  quit: () => getRedisClient().quit(),
+  isOpen: Object.defineProperty({}, 'isOpen', {
+    get: () => getRedisClient().isOpen,
+  }) as any,
+  on: (event: string, callback: (...args: any[]) => void) => {
+    getRedisClient().on(event, callback)
   },
-})
+} as unknown as RedisClientType
 
 // Lazy-loaded Bull queue - only initialize when first needed
 let _scraperQueue: Queue.Queue | null = null
 
-function initializeQueue() {
+export function getScraperQueue(): Queue.Queue {
   if (!_scraperQueue) {
     _scraperQueue = new Queue('dublin-events-scraper', {
       redis: redisUrl,
@@ -73,16 +80,21 @@ function initializeQueue() {
   return _scraperQueue
 }
 
-export function getScraperQueue(): Queue.Queue {
-  return initializeQueue()
-}
-
-export const scraperQueue = new Proxy({} as Queue.Queue, {
-  get: (_target, prop) => {
-    const queue = initializeQueue()
-    return (queue as any)[prop]
+// Export as lazy-initialized object to match initializeQueue.ts usage
+export const scraperQueue = {
+  add: (data: any, opts?: any) => getScraperQueue().add(data, opts),
+  process: (concurrency: number, fn: any) => getScraperQueue().process(concurrency, fn),
+  on: (event: string, callback: (...args: any[]) => void) => {
+    getScraperQueue().on(event, callback)
   },
-})
+  clean: (maxAge: number, status: string) => getScraperQueue().clean(maxAge, status),
+  getJobCounts: () => getScraperQueue().getJobCounts(),
+  getRepeatableJobs: () => getScraperQueue().getRepeatableJobs(),
+  removeRepeatableByKey: (key: string) => getScraperQueue().removeRepeatableByKey(key),
+  pause: () => getScraperQueue().pause(),
+  resume: () => getScraperQueue().resume(),
+  close: () => getScraperQueue().close(),
+} as unknown as Queue.Queue
 
 // Clean up old jobs periodically
 export async function cleanupOldJobs() {

@@ -1,6 +1,7 @@
 import scraperQueue, { redisClient } from './bullConfig'
 import processScrapeJob from './scrapeJobProcessor'
-import { scheduleRecurringScraperJobs } from './scrapeJobProcessor'
+import { scheduleRecurringScraperJobs, type ScrapeJobResult } from './scrapeJobProcessor'
+import type { Job } from 'bull'
 
 let queueInitialized = false
 
@@ -54,23 +55,23 @@ function setupQueueListeners() {
     console.error('[Queue Event] Error:', error)
   })
 
-  scraperQueue.on('waiting', (jobId) => {
+  scraperQueue.on('waiting', (jobId: string) => {
     console.log(`[Queue Event] Job ${jobId} is waiting to be processed`)
   })
 
-  scraperQueue.on('active', (job) => {
+  scraperQueue.on('active', (job: Job<any>) => {
     console.log(`[Queue Event] Job ${job.id} is now active`)
   })
 
-  scraperQueue.on('stalled', (job) => {
+  scraperQueue.on('stalled', (job: Job<any>) => {
     console.warn(`[Queue Event] Job ${job.id} has stalled and will be retried`)
   })
 
-  scraperQueue.on('progress', (job, progress) => {
+  scraperQueue.on('progress', (job: Job<any>, progress: number) => {
     console.log(`[Queue Event] Job ${job.id} progress: ${progress}%`)
   })
 
-  scraperQueue.on('completed', (job, result) => {
+  scraperQueue.on('completed', (job: Job<any>, result: ScrapeJobResult) => {
     console.log(`[Queue Event] Job ${job.id} completed successfully`)
     if (result.statistics) {
       console.log(`  Total events: ${result.statistics.totalEvents}`)
@@ -79,7 +80,7 @@ function setupQueueListeners() {
     }
   })
 
-  scraperQueue.on('failed', (job, err) => {
+  scraperQueue.on('failed', (job: Job<any>, err: Error) => {
     console.error(`[Queue Event] Job ${job.id} failed:`, err.message)
   })
 

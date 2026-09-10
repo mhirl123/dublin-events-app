@@ -1,43 +1,42 @@
 import Queue from 'bull'
-import { createClient } from 'redis'
+import { createClient, RedisClientType } from 'redis'
 
 // Get Redis connection URL from environment or use default
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
 
-// Lazy-load Redis client to prevent connection errors during build
-let redisClientInstance: ReturnType<typeof createClient> | null = null
+// Lazy-loaded Redis client - only initialize when first needed
+let _redisClient: RedisClientType | null = null
 
-function getRedisClientInstance() {
-  if (!redisClientInstance) {
-    redisClientInstance = createClient({
+export function getRedisClient(): RedisClientType {
+  if (!_redisClient) {
+    _redisClient = createClient({
       url: redisUrl,
     })
 
     // Event handlers for Redis client
-    redisClientInstance.on('error', (err) => {
+    _redisClient.on('error', (err) => {
       console.error('Redis client error:', err)
     })
 
-    redisClientInstance.on('connect', () => {
+    _redisClient.on('connect', () => {
       console.log('[Queue] Redis client connected')
     })
 
-    redisClientInstance.on('ready', () => {
+    _redisClient.on('ready', () => {
       console.log('[Queue] Redis client ready')
     })
   }
-  return redisClientInstance
+  return _redisClient
 }
 
-export const redisClient = new Proxy({} as any, {
+export const redisClient = new Proxy({} as RedisClientType, {
   get: (_target, prop) => {
-    const instance = getRedisClientInstance()
-    const value = (instance as any)[prop]
-    return typeof value === 'function' ? value.bind(instance) : value
+    const client = getRedisClient()
+    return (client as any)[prop]
   },
 })
 
-// Lazy-load Bull queue for scrapers to defer Redis connection
+// Lazy-loaded Bull queue - only initialize when first needed
 let _scraperQueue: Queue.Queue | null = null
 
 function initializeQueue() {
@@ -78,11 +77,10 @@ export function getScraperQueue(): Queue.Queue {
   return initializeQueue()
 }
 
-export const scraperQueue = new Proxy({} as any, {
+export const scraperQueue = new Proxy({} as Queue.Queue, {
   get: (_target, prop) => {
-    const queue = getScraperQueue()
-    const value = (queue as any)[prop]
-    return typeof value === 'function' ? value.bind(queue) : value
+    const queue = initializeQueue()
+    return (queue as any)[prop]
   },
 })
 
@@ -90,7 +88,7 @@ export const scraperQueue = new Proxy({} as any, {
 export async function cleanupOldJobs() {
   try {
     const maxAge = 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
-    await getScraperQueue().clean(maxAge, 'completed')
+    await scraperQueue.clean(maxAge, 'completed')
     console.log('[Queue] Cleaned up old jobs')
   } catch (error) {
     console.error('[Queue] Error cleaning up old jobs:', error)
@@ -100,7 +98,7 @@ export async function cleanupOldJobs() {
 // Get queue status
 export async function getQueueStatus() {
   try {
-    const counts = await getScraperQueue().getJobCounts()
+    const counts = await scraperQueue.getJobCounts()
     return {
       waiting: counts.waiting,
       active: counts.active,
@@ -139,7 +137,7 @@ export async function checkQueueHealth() {
 // Pause queue
 export async function pauseQueue() {
   try {
-    await getScraperQueue().pause()
+    await scraperQueue.pause()
     console.log('[Queue] Queue paused')
   } catch (error) {
     console.error('[Queue] Error pausing queue:', error)
@@ -149,7 +147,7 @@ export async function pauseQueue() {
 // Resume queue
 export async function resumeQueue() {
   try {
-    await getScraperQueue().resume()
+    await scraperQueue.resume()
     console.log('[Queue] Queue resumed')
   } catch (error) {
     console.error('[Queue] Error resuming queue:', error)

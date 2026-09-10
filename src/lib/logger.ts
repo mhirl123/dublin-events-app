@@ -15,7 +15,6 @@ interface LogEntry {
 }
 
 class Logger {
-  private isDevelopment = process.env.NODE_ENV === 'development'
   private logLevel = process.env.LOG_LEVEL || 'INFO'
 
   private getLevelPriority(level: LogLevel): number {

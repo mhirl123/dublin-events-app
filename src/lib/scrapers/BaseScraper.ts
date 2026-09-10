@@ -104,7 +104,7 @@ export abstract class BaseScraper {
         }
 
         // Link event to source
-        const eventSource = await this.prisma.eventSource.upsert({
+        await this.prisma.eventSource.upsert({
           where: {
             eventId_sourceId: {
               eventId: savedEvent!.id,

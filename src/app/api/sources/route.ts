@@ -58,7 +58,7 @@ export async function GET() {
 
     // Calculate overall health
     const activeCount = sourcesWithStats.filter(
-      s => s.status === 'active' && !s.isStale
+      (s: any) => s.status === 'active' && !s.isStale
     ).length
     const healthPercentage = (activeCount / sourcesWithStats.length) * 100
 
@@ -69,7 +69,7 @@ export async function GET() {
         activeSources: statusCounts['active'] || 0,
         inactiveSources: statusCounts['broken'] || 0,
         disabledSources: statusCounts['disabled'] || 0,
-        staleSources: sourcesWithStats.filter(s => s.isStale).length,
+        staleSources: sourcesWithStats.filter((s: any) => s.isStale).length,
         healthPercentage: Math.round(healthPercentage),
       },
       metadata: {

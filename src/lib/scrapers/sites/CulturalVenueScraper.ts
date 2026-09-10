@@ -56,7 +56,7 @@ export class CulturalVenueScraper extends BaseScraper {
       const $ = cheerio.load(html)
 
       // Parse events from the page
-      $(this.eventSelector).each((index, element) => {
+      $(this.eventSelector).each((_index, element) => {
         try {
           const $event = $(element)
 

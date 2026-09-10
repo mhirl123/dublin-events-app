@@ -33,7 +33,6 @@ model Event {
   @@index([venueId])
   @@index([genre])
   @@index([isActive])
-  @@fulltext([title, description])
   @@map("events")
 }
 

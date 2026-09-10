@@ -4,22 +4,37 @@ import { createClient } from 'redis'
 // Get Redis connection URL from environment or use default
 const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
 
-// Create Redis clients
-export const redisClient = createClient({
-  url: redisUrl,
-})
+// Lazy-load Redis client to prevent connection errors during build
+let redisClientInstance: ReturnType<typeof createClient> | null = null
 
-// Event handlers for Redis client
-redisClient.on('error', (err) => {
-  console.error('Redis client error:', err)
-})
+function getRedisClientInstance() {
+  if (!redisClientInstance) {
+    redisClientInstance = createClient({
+      url: redisUrl,
+    })
 
-redisClient.on('connect', () => {
-  console.log('[Queue] Redis client connected')
-})
+    // Event handlers for Redis client
+    redisClientInstance.on('error', (err) => {
+      console.error('Redis client error:', err)
+    })
 
-redisClient.on('ready', () => {
-  console.log('[Queue] Redis client ready')
+    redisClientInstance.on('connect', () => {
+      console.log('[Queue] Redis client connected')
+    })
+
+    redisClientInstance.on('ready', () => {
+      console.log('[Queue] Redis client ready')
+    })
+  }
+  return redisClientInstance
+}
+
+export const redisClient = new Proxy({} as any, {
+  get: (target, prop) => {
+    const instance = getRedisClientInstance()
+    const value = (instance as any)[prop]
+    return typeof value === 'function' ? value.bind(instance) : value
+  },
 })
 
 // Create Bull queue for scrapers

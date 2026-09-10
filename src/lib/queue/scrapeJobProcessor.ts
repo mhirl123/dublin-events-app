@@ -123,7 +123,7 @@ export async function processScrapeJob(
         totalVenues,
         totalSources,
         eventsByGenre: genreData.reduce(
-          (acc, g) => {
+          (acc: Record<string, number>, g) => {
             if (g.genre) {
               acc[g.genre] = g._count.id
             }

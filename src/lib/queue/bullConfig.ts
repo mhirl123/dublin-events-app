@@ -156,4 +156,4 @@ export async function resumeQueue() {
   }
 }
 
-export default getScraperQueue
+export default scraperQueue

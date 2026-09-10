@@ -37,41 +37,60 @@ export const redisClient = new Proxy({} as any, {
   },
 })
 
-// Create Bull queue for scrapers
-export const scraperQueue = new Queue('dublin-events-scraper', {
-  redis: redisUrl,
-})
+// Lazy-load Bull queue for scrapers to defer Redis connection
+let _scraperQueue: Queue.Queue | null = null
 
-// Queue event handlers
-scraperQueue.on('error', (error) => {
-  console.error('[Scraper Queue] Error:', error)
-})
+function initializeQueue() {
+  if (!_scraperQueue) {
+    _scraperQueue = new Queue('dublin-events-scraper', {
+      redis: redisUrl,
+    })
 
-scraperQueue.on('waiting', (jobId) => {
-  console.log(`[Scraper Queue] Job ${jobId} is waiting`)
-})
+    // Queue event handlers
+    _scraperQueue.on('error', (error) => {
+      console.error('[Scraper Queue] Error:', error)
+    })
 
-scraperQueue.on('active', (job) => {
-  console.log(`[Scraper Queue] Job ${job.id} is active`)
-})
+    _scraperQueue.on('waiting', (jobId) => {
+      console.log(`[Scraper Queue] Job ${jobId} is waiting`)
+    })
 
-scraperQueue.on('completed', (job) => {
-  console.log(`[Scraper Queue] Job ${job.id} completed successfully`)
-})
+    _scraperQueue.on('active', (job) => {
+      console.log(`[Scraper Queue] Job ${job.id} is active`)
+    })
 
-scraperQueue.on('failed', (job, err) => {
-  console.error(`[Scraper Queue] Job ${job.id} failed:`, err.message)
-})
+    _scraperQueue.on('completed', (job) => {
+      console.log(`[Scraper Queue] Job ${job.id} completed successfully`)
+    })
 
-scraperQueue.on('stalled', (job) => {
-  console.warn(`[Scraper Queue] Job ${job.id} has stalled`)
+    _scraperQueue.on('failed', (job, err) => {
+      console.error(`[Scraper Queue] Job ${job.id} failed:`, err.message)
+    })
+
+    _scraperQueue.on('stalled', (job) => {
+      console.warn(`[Scraper Queue] Job ${job.id} has stalled`)
+    })
+  }
+  return _scraperQueue
+}
+
+export function getScraperQueue(): Queue.Queue {
+  return initializeQueue()
+}
+
+export const scraperQueue = new Proxy({} as any, {
+  get: (_target, prop) => {
+    const queue = getScraperQueue()
+    const value = (queue as any)[prop]
+    return typeof value === 'function' ? value.bind(queue) : value
+  },
 })
 
 // Clean up old jobs periodically
 export async function cleanupOldJobs() {
   try {
     const maxAge = 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
-    await scraperQueue.clean(maxAge, 'completed')
+    await getScraperQueue().clean(maxAge, 'completed')
     console.log('[Queue] Cleaned up old jobs')
   } catch (error) {
     console.error('[Queue] Error cleaning up old jobs:', error)
@@ -81,7 +100,7 @@ export async function cleanupOldJobs() {
 // Get queue status
 export async function getQueueStatus() {
   try {
-    const counts = await scraperQueue.getJobCounts()
+    const counts = await getScraperQueue().getJobCounts()
     return {
       waiting: counts.waiting,
       active: counts.active,
@@ -120,7 +139,7 @@ export async function checkQueueHealth() {
 // Pause queue
 export async function pauseQueue() {
   try {
-    await scraperQueue.pause()
+    await getScraperQueue().pause()
     console.log('[Queue] Queue paused')
   } catch (error) {
     console.error('[Queue] Error pausing queue:', error)
@@ -130,11 +149,11 @@ export async function pauseQueue() {
 // Resume queue
 export async function resumeQueue() {
   try {
-    await scraperQueue.resume()
+    await getScraperQueue().resume()
     console.log('[Queue] Queue resumed')
   } catch (error) {
     console.error('[Queue] Error resuming queue:', error)
   }
 }
 
-export default scraperQueue
+export default getScraperQueue

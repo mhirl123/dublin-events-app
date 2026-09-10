@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     ])
 
     return NextResponse.json({
-      venues: venues.map(venue => ({
+      venues: venues.map((venue: any) => ({
         id: venue.id,
         name: venue.name,
         address: venue.address,

@@ -81,28 +81,6 @@ export async function getQueueStatus() {
   }
 }
 
-// Check queue health
-export async function checkQueueHealth() {
-  try {
-    await redisClient.connect()
-    const ping = await redisClient.ping()
-    await redisClient.disconnect()
-
-    return {
-      healthy: ping === 'PONG',
-      redis: ping === 'PONG' ? 'connected' : 'disconnected',
-      error: null,
-    }
-  } catch (error) {
-    console.error('[Queue] Health check error:', error)
-    return {
-      healthy: false,
-      redis: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error',
-    }
-  }
-}
-
 // Pause queue
 export async function pauseQueue() {
   try {

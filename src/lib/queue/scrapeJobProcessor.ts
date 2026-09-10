@@ -79,7 +79,7 @@ export async function processScrapeJob(
       await prisma.source.updateMany({
         data: {
           lastScrapedAt: new Date(),
-          nextScrapedAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // Next 24 hours
+          nextScrapeAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // Next 24 hours
           scraperStatus: 'active',
         },
       })

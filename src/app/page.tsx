@@ -28,7 +28,6 @@ export default function Home() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [events, setEvents] = useState([])
-  const [hasSearched, setHasSearched] = useState(false)
 
   // Auto-search on component mount
   useEffect(() => {
@@ -37,7 +36,6 @@ export default function Home() {
 
   const handleSearch = async () => {
     setIsLoading(true)
-    setHasSearched(true)
     try {
       const params = new URLSearchParams()
       if (searchParams.query) params.append('search', searchParams.query)

@@ -21,9 +21,8 @@ export async function GET() {
 
     return NextResponse.json({
       status,
-      recentJobs: recentJobs.map(job => ({
+      recentJobs: recentJobs.map((job: any) => ({
         id: job.id,
-        state: job._progress,
         progress: job.progress(),
         data: job.data,
         result: job.returnvalue,

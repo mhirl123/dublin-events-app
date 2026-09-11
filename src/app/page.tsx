@@ -1,8 +1,5 @@
 'use client'
 
-// Force dynamic rendering to prevent static generation at build time
-export const dynamic = 'force-dynamic'
-
 import { useState, useEffect } from 'react'
 import EventGrid from '@/components/EventGrid'
 import SearchFilters from '@/components/SearchFilters'

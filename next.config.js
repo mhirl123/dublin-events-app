@@ -1,4 +1,4 @@
-﻿/** @type {import('next').NextConfig} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
   images: {
@@ -7,6 +7,9 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['prisma', '@prisma/client'],
   },
+  // Disable static site generation to prevent out-of-memory errors
+  // during the "Collecting page data" phase of the build
+  staticPageGenerationTimeout: 0,
 }
 
 module.exports = nextConfig

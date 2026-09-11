@@ -87,7 +87,7 @@ export const scraperQueue = {
   on: (event: string, callback: (...args: any[]) => void) => {
     getScraperQueue().on(event, callback)
   },
-  clean: (maxAge: number, status: string) => getScraperQueue().clean(maxAge, status),
+  clean: (maxAge: number, status?: any) => getScraperQueue().clean(maxAge, status),
   getJobCounts: () => getScraperQueue().getJobCounts(),
   getRepeatableJobs: () => getScraperQueue().getRepeatableJobs(),
   removeRepeatableByKey: (key: string) => getScraperQueue().removeRepeatableByKey(key),

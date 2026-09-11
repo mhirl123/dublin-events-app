@@ -1,5 +1,8 @@
 'use client'
 
+// Force dynamic rendering to prevent static generation at build time
+export const dynamic = 'force-dynamic'
+
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 

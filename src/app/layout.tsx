@@ -2,6 +2,10 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import './globals.css'
 
+// Force dynamic rendering to prevent static generation at build time
+// which would cause memory issues during the collection of page data
+export const dynamic = 'force-dynamic'
+
 // Note: metadata doesn't work in client components, this is a workaround
 export const metadata: Metadata = {
   title: 'Dublin Events - Find Events in Dublin',

@@ -35,9 +35,9 @@ export const redisClient = {
   disconnect: () => getRedisClient().disconnect(),
   ping: () => getRedisClient().ping(),
   quit: () => getRedisClient().quit(),
-  isOpen: Object.defineProperty({}, 'isOpen', {
-    get: () => getRedisClient().isOpen,
-  }) as any,
+  get isOpen() {
+    return getRedisClient().isOpen
+  },
   on: (event: string, callback: (...args: any[]) => void) => {
     getRedisClient().on(event, callback)
   },

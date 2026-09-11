@@ -1,5 +1,9 @@
-import { NextResponse } from 'next/server'
+﻿import { NextResponse } from 'next/server'
 import { checkQueueHealth, getQueueStatus } from '@/lib/queue/bullConfig'
+
+// Force dynamic rendering to prevent build-time route generation
+// that would attempt to connect to Redis during build
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {

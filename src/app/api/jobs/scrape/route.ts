@@ -1,6 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import scraperQueue from '@/lib/queue/bullConfig'
 import { ScrapeJobData } from '@/lib/queue/scrapeJobProcessor'
+
+// Force dynamic rendering to prevent build-time route generation
+// that would attempt to connect to Redis during build
+export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +28,7 @@ export async function POST(request: NextRequest) {
       removeOnFail: false,
     })
 
-    console.log(`[API] Created manual scrape job: ${job.id}`)
+    console.log([API] Created manual scrape job: $job.id)
 
     return NextResponse.json(
       {
@@ -32,7 +36,7 @@ export async function POST(request: NextRequest) {
         jobId: job.id,
         status: 'queued',
         data: jobData,
-        message: `Scrape job ${job.id} has been queued`,
+        message: Scrape job $job.id has been queued,
         metadata: {
           timestamp: new Date().toISOString(),
         },

@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import scraperQueue from '@/lib/queue/bullConfig'
 import { ScrapeJobData } from '@/lib/queue/scrapeJobProcessor'
 
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       removeOnFail: false,
     })
 
-    console.log([API] Created manual scrape job: $job.id)
+    console.log(`[API] Created manual scrape job: ${job.id}`)
 
     return NextResponse.json(
       {
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
         jobId: job.id,
         status: 'queued',
         data: jobData,
-        message: Scrape job $job.id has been queued,
+        message: `Scrape job ${job.id} has been queued`,
         metadata: {
           timestamp: new Date().toISOString(),
         },
@@ -107,4 +107,3 @@ export async function GET(request: NextRequest) {
     )
   }
 }
-

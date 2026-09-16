@@ -1,4 +1,4 @@
-﻿import { NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { checkQueueHealth, getQueueStatus } from '@/lib/queue/bullConfig'
 
 // Force dynamic rendering to prevent build-time route generation

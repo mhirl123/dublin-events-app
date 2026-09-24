@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 
 interface Event {
@@ -45,6 +46,8 @@ const GRADIENT_COLORS = [
 ]
 
 export default function EventGrid({ events, isLoading }: EventGridProps) {
+  const [showAll, setShowAll] = useState(false)
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
@@ -67,6 +70,14 @@ export default function EventGrid({ events, isLoading }: EventGridProps) {
     )
   }
 
+  // Sort events by date (earliest first) for recommended carousel
+  const recommendedEvents = [...events]
+    .sort((a, b) => new Date(a.dateStart).getTime() - new Date(b.dateStart).getTime())
+    .slice(0, 5)
+
+  // Show limited events initially, or all if "Show All" is clicked
+  const displayEvents = showAll ? events : events.slice(0, 12)
+
   return (
     <div>
       <div className="mb-8">
@@ -77,8 +88,27 @@ export default function EventGrid({ events, isLoading }: EventGridProps) {
           ✨ {events.length} exciting {events.length === 1 ? 'event' : 'events'} waiting for you
         </p>
       </div>
+
+      {/* Recommended Events Carousel */}
+      {recommendedEvents.length > 0 && (
+        <div className="mb-12">
+          <h3 className="text-2xl font-bold mb-4 text-gray-900">⭐ Happening Soon</h3>
+          <div className="flex gap-4 overflow-x-auto pb-4 scroll-smooth">
+            {recommendedEvents.map((event, index) => (
+              <div key={event.id} className="flex-shrink-0 w-72">
+                <EventCard
+                  event={event}
+                  gradientIndex={index % GRADIENT_COLORS.length}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Main Events Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {events.map((event, index) => (
+        {displayEvents.map((event, index) => (
           <EventCard
             key={event.id}
             event={event}
@@ -86,6 +116,18 @@ export default function EventGrid({ events, isLoading }: EventGridProps) {
           />
         ))}
       </div>
+
+      {/* Show All Button */}
+      {!showAll && events.length > 12 && (
+        <div className="flex justify-center mt-12">
+          <button
+            onClick={() => setShowAll(true)}
+            className="px-8 py-3 bg-gradient-to-r from-[#7c3aed] to-[#ec4899] text-white font-bold rounded-lg hover:shadow-lg hover:shadow-purple-400/50 transition-all text-center"
+          >
+            📺 Show All Events ({events.length})
+          </button>
+        </div>
+      )}
     </div>
   )
 }

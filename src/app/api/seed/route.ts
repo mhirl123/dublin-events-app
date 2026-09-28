@@ -121,7 +121,6 @@ async function seedDatabase() {
     ])
 
     // Create test events with real Dublin event URLs and images
-    const now = new Date()
     const events = await Promise.all([
       // Real Dublin Theatre Festival - happening NOW
       prisma.event.create({

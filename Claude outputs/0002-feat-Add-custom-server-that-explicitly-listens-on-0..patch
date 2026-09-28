@@ -1,0 +1,55 @@
+From d79b531c9d1451ced84d58c09a381c7caec94f42 Mon Sep 17 00:00:00 2001
+From: "Claude Haiku 4.5" <noreply@anthropic.com>
+Date: Mon, 28 Sep 2026 15:38:38 +0000
+Subject: [PATCH 2/4] feat: Add custom server that explicitly listens on
+ 0.0.0.0
+
+This custom server ensures the Next.js app listens on all network interfaces
+(0.0.0.0) instead of localhost only, allowing Railway's load balancer to route
+traffic correctly.
+
+Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01Tz3jEsLNEVcPGqcnsrSdnF
+---
+ server.js | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+ create mode 100644 server.js
+
+diff --git a/server.js b/server.js
+new file mode 100644
+index 0000000..6457882
+--- /dev/null
++++ b/server.js
+@@ -0,0 +1,29 @@
++const { createServer } = require('http');
++const { parse } = require('url');
++const next = require('next');
++const fs = require('fs');
++const path = require('path');
++
++const dev = process.env.NODE_ENV !== 'production';
++const hostname = '0.0.0.0';
++const port = parseInt(process.env.PORT || '3000', 10);
++
++// Create the Next.js app
++const app = next({ dev });
++const handle = app.getRequestHandler();
++
++app.prepare().then(() => {
++  createServer(async (req, res) => {
++    try {
++      const parsedUrl = parse(req.url, true);
++      await handle(req, res, parsedUrl);
++    } catch (err) {
++      console.error('Error handling request:', err);
++      res.statusCode = 500;
++      res.end('Internal server error');
++    }
++  }).listen(port, hostname, (err) => {
++    if (err) throw err;
++    console.log(`> Ready on http://${hostname}:${port}`);
++  });
++});
+-- 
+2.43.0
+

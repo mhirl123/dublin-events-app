@@ -5,18 +5,8 @@ const prisma = new PrismaClient()
 
 export const dynamic = 'force-dynamic'
 
-export async function POST(request: NextRequest) {
-  // Simple security check - in production, use proper authentication
-  const authHeader = request.headers.get('authorization')
-  const secretKey = process.env.SEED_SECRET_KEY || 'dev-secret-key'
-
-  if (authHeader !== `Bearer ${secretKey}`) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    )
-  }
-
+// Helper function to seed the database
+async function seedDatabase() {
   try {
     console.log('🌱 Starting database seeding...')
 
@@ -325,20 +315,70 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('✅ Database seeding complete!')
+    return {
+      success: true,
+      venues: venues.length,
+      sources: sources.length,
+      events: events.length,
+    }
+  } catch (error) {
+    console.error('Seeding failed:', error)
+    throw error
+  }
+}
 
+export async function GET(request: NextRequest) {
+  const key = new URL(request.url).searchParams.get('key')
+  const secretKey = process.env.SEED_SECRET_KEY || 'dev-secret-key'
+
+  if (key !== secretKey) {
+    return NextResponse.json(
+      { error: 'Unauthorized - invalid key' },
+      { status: 401 }
+    )
+  }
+
+  try {
+    const result = await seedDatabase()
     return NextResponse.json(
       {
         message: 'Database seeded successfully',
-        summary: {
-          venues: venues.length,
-          sources: sources.length,
-          events: events.length,
-        },
+        summary: result,
       },
       { status: 200 }
     )
   } catch (error) {
-    console.error('Seeding failed:', error)
+    return NextResponse.json(
+      {
+        error: 'Seeding failed',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    )
+  }
+}
+
+export async function POST(request: NextRequest) {
+  const authHeader = request.headers.get('authorization')
+  const secretKey = process.env.SEED_SECRET_KEY || 'dev-secret-key'
+
+  if (authHeader !== `Bearer ${secretKey}`) {
+    return NextResponse.json(
+      { error: 'Unauthorized' },
+      { status: 401 }
+    )
+  }
+
+  try {
+    const result = await seedDatabase()
+    return NextResponse.json(
+      {
+        message: 'Database seeded successfully',
+        summary: result,
+      },
+      { status: 200 }
+    )
+  } catch (error) {
     return NextResponse.json(
       {
         error: 'Seeding failed',

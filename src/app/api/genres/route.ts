@@ -3,8 +3,6 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export const dynamic = 'force-dynamic'
-
 export async function GET() {
   try {
     // Get all unique genres and their event counts
@@ -41,7 +39,5 @@ export async function GET() {
       { error: 'Failed to fetch genres' },
       { status: 500 }
     )
-  } finally {
-    await prisma.$disconnect()
   }
 }

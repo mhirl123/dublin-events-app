@@ -1,0 +1,1623 @@
+From 7f7e39c3f54ef37904d0c4560e4751e61a22e857 Mon Sep 17 00:00:00 2001
+From: "Claude Haiku 4.5" <noreply@anthropic.com>
+Date: Mon, 28 Sep 2026 13:48:45 +0000
+Subject: [PATCH 1/4] chore: Remove temporary and malformed files from build
+
+- Remove bullConfig.ts.ts (malformed duplicate with type error)
+- Remove bullConfig.ts.backup and bullConfig-1.ts duplicates
+- Remove temporary .bat, .ps1, and .vbs helper scripts
+- Remove Claude outputs folder with configuration files
+
+These files were accidentally committed and breaking the TypeScript build.
+
+Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01Tz3jEsLNEVcPGqcnsrSdnF
+---
+ Claude outputs/DEPLOYMENT_NEXT_STEPS.md | 158 ----------------------
+ Claude outputs/bullConfig.ts            | 173 ------------------------
+ Claude outputs/push-update.bat          |  44 ------
+ Claude outputs/route.ts                 |  89 ------------
+ commit-and-push.bat                     |   9 --
+ commit-and-push.ps1                     |  26 ----
+ commit-and-push.vbs                     |   3 -
+ commit-fix.bat                          |  52 -------
+ deploy-fixes.bat                        |  54 --------
+ execute-git-sync.vbs                    |   2 -
+ final-push.bat                          |  30 ----
+ final-verify.ps1                        |  38 ------
+ fix-static-generation.bat               |  59 --------
+ git-commands.bat                        |   8 --
+ git-push-verbose.bat                    |  40 ------
+ git-status-check.ps1                    |   9 --
+ git-sync.ps1                            |  13 --
+ push-dynamic-fixes.bat                  |  29 ----
+ push-fixes.ps1                          |   7 -
+ push-to-github.bat                      |  24 ----
+ run-git-commands.bat                    |   6 -
+ run-git-commands.ps1                    |   5 -
+ run-git-sync.bat                        |   4 -
+ run-git-with-log.bat                    |  40 ------
+ src/lib/queue/bullConfig-1.ts           | 173 ------------------------
+ src/lib/queue/bullConfig.ts.backup      | 169 -----------------------
+ src/lib/queue/bullConfig.ts.ts          | 104 --------------
+ verify-push.ps1                         |  11 --
+ 28 files changed, 1379 deletions(-)
+ delete mode 100644 Claude outputs/DEPLOYMENT_NEXT_STEPS.md
+ delete mode 100644 Claude outputs/bullConfig.ts
+ delete mode 100644 Claude outputs/push-update.bat
+ delete mode 100644 Claude outputs/route.ts
+ delete mode 100644 commit-and-push.bat
+ delete mode 100644 commit-and-push.ps1
+ delete mode 100644 commit-and-push.vbs
+ delete mode 100644 commit-fix.bat
+ delete mode 100644 deploy-fixes.bat
+ delete mode 100644 execute-git-sync.vbs
+ delete mode 100644 final-push.bat
+ delete mode 100644 final-verify.ps1
+ delete mode 100644 fix-static-generation.bat
+ delete mode 100644 git-commands.bat
+ delete mode 100644 git-push-verbose.bat
+ delete mode 100644 git-status-check.ps1
+ delete mode 100644 git-sync.ps1
+ delete mode 100644 push-dynamic-fixes.bat
+ delete mode 100644 push-fixes.ps1
+ delete mode 100644 push-to-github.bat
+ delete mode 100644 run-git-commands.bat
+ delete mode 100644 run-git-commands.ps1
+ delete mode 100644 run-git-sync.bat
+ delete mode 100644 run-git-with-log.bat
+ delete mode 100644 src/lib/queue/bullConfig-1.ts
+ delete mode 100644 src/lib/queue/bullConfig.ts.backup
+ delete mode 100644 src/lib/queue/bullConfig.ts.ts
+ delete mode 100644 verify-push.ps1
+
+diff --git a/Claude outputs/DEPLOYMENT_NEXT_STEPS.md b/Claude outputs/DEPLOYMENT_NEXT_STEPS.md
+deleted file mode 100644
+index aefd332..0000000
+--- a/Claude outputs/DEPLOYMENT_NEXT_STEPS.md	
++++ /dev/null
+@@ -1,158 +0,0 @@
+-# Dublin Events App - Deployment Next Steps
+-
+-**Date:** September 11, 2026  
+-**Fix Status:** ✅ Complete (commit `9f95c9c`)
+-
+----
+-
+-## Summary
+-
+-The TypeScript compilation errors preventing your Dublin Events App build on Railway have been fixed. The issue was in `src/lib/queue/bullConfig.ts` where Proxy patterns were triggering Redis connection attempts at module import time.
+-
+-### What Was Fixed
+-1. **Proxy Pattern Replacement** - Replaced dynamic Proxy objects with explicit method forwarding closures
+-   - Prevents build-time Redis connection attempts
+-   - Maintains true lazy-loading behavior
+-   - No side effects at module import time
+-
+-2. **TypeScript Type Error** - Fixed `clean()` method parameter type
+-   - Changed from `status: string` to `status?: any`
+-   - Now matches Bull library's actual type signature
+-
+-### The Commit
+-```
+-Commit Hash: 9f95c9c
+-File Changed: src/lib/queue/bullConfig.ts
+-Changes: 26 insertions, 10 deletions
+-```
+-
+----
+-
+-## Action Required: Push to GitHub
+-
+-The fix is committed locally in the cloud container but cannot be pushed from here due to git authentication constraints.
+-
+-### Push the Fix (Do This Now)
+-```bash
+-# Navigate to your Dublin Events App directory
+-cd /path/to/dublin-events-app
+-
+-# Verify you're on main branch
+-git branch
+-
+-# Check commit is ready to push
+-git log -1 --oneline
+-# Should show: 9f95c9c Fix: Replace Proxy pattern...
+-
+-# Push to GitHub
+-git push origin main
+-
+-# Verify push succeeded
+-git log --oneline -1 origin/main
+-# Should now show: 9f95c9c Fix: Replace Proxy pattern...
+-```
+-
+----
+-
+-## What Happens After You Push
+-
+-### Automatic Railway Deployment
+-1. **GitHub Webhook** → Triggers Railway build
+-2. **Build Phase** (should now succeed)
+-   - ✅ No Redis connection errors
+-   - ✅ TypeScript compilation passes
+-   - ✅ Build completes in ~20-30 seconds
+-3. **Deployment Phase**
+-   - ✅ App deployed to Railway
+-   - ✅ Database migrations run (if any)
+-   - ✅ App is live and serving requests
+-
+-### Expected Build Logs
+-You should see in Railway:
+-```
+-✓ Building Next.js application
+-✓ Generated Prisma client
+-✓ TypeScript compilation successful
+-✓ Building for production
+-✓ Build completed successfully
+-✓ Deploying to Railway...
+-✓ Deployment successful
+-```
+-
+----
+-
+-## Verification Checklist
+-
+-After pushing and Railway deploys:
+-- [ ] Check Railway dashboard for SUCCESS status
+-- [ ] Visit your app URL to verify it loads
+-- [ ] No error logs in Railway dashboard
+-- [ ] API endpoints respond to requests
+-
+----
+-
+-## Technical Details
+-
+-See `claude/typescript-fix-technical-details.md` in the project for in-depth analysis of:
+-- Root cause analysis
+-- Architecture changes
+-- Before/after code comparison
+-- Execution timeline
+-- Why this approach solves the problem
+-
+----
+-
+-## File Changes
+-
+-**Modified:** `src/lib/queue/bullConfig.ts`
+-
+-### Key Changes
+-
+-#### 1. redisClient (Lines 32-44)
+-```typescript
+-// Before: Dynamic Proxy
+-export const redisClient = new Proxy({} as RedisClientType, {
+-  get: (_target, prop) => {
+-    const client = getRedisClient()  // ❌ Called at module import
+-    return (client as any)[prop]
+-  },
+-})
+-
+-// After: Explicit methods
+-export const redisClient = {
+-  connect: () => getRedisClient().connect(),      // ✅ Only called when invoked
+-  disconnect: () => getRedisClient().disconnect(),
+-  ping: () => getRedisClient().ping(),
+-  quit: () => getRedisClient().quit(),
+-  isOpen: Object.defineProperty({}, 'isOpen', {
+-    get: () => getRedisClient().isOpen,
+-  }) as any,
+-  on: (event: string, callback: (...args: any[]) => void) => {
+-    getRedisClient().on(event, callback)
+-  },
+-} as unknown as RedisClientType
+-```
+-
+-#### 2. scraperQueue (Lines 88-101)
+-Same pattern applied to Bull queue export
+-
+-#### 3. Type Fix (Line 94)
+-```typescript
+-// Before: status: string ❌
+-// After: status?: any ✅
+-clean: (maxAge: number, status?: any) => getScraperQueue().clean(maxAge, status),
+-```
+-
+----
+-
+-## Questions?
+-
+-If the build still fails after pushing, check:
+-1. Redis service is running in Railway
+-2. PostgreSQL service is running in Railway
+-3. Environment variables are set (DATABASE_URL, REDIS_URL)
+-4. No other uncommitted changes in the working directory
+-
+----
+-
+-**Ready to deploy? Push that commit!**
+diff --git a/Claude outputs/bullConfig.ts b/Claude outputs/bullConfig.ts
+deleted file mode 100644
+index 37b8cff..0000000
+--- a/Claude outputs/bullConfig.ts	
++++ /dev/null
+@@ -1,173 +0,0 @@
+-import Queue from 'bull'
+-import { createClient, RedisClientType } from 'redis'
+-
+-// Get Redis connection URL from environment or use default
+-const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
+-
+-// Lazy-loaded Redis client - only initialize when first needed
+-let _redisClient: RedisClientType | null = null
+-
+-export function getRedisClient(): RedisClientType {
+-  if (!_redisClient) {
+-    _redisClient = createClient({
+-      url: redisUrl,
+-    })
+-
+-    // Event handlers for Redis client
+-    _redisClient.on('error', (err) => {
+-      console.error('Redis client error:', err)
+-    })
+-
+-    _redisClient.on('connect', () => {
+-      console.log('[Queue] Redis client connected')
+-    })
+-
+-    _redisClient.on('ready', () => {
+-      console.log('[Queue] Redis client ready')
+-    })
+-  }
+-  return _redisClient
+-}
+-
+-// Export as lazy-initialized object to match initializeQueue.ts usage
+-export const redisClient = {
+-  connect: () => getRedisClient().connect(),
+-  disconnect: () => getRedisClient().disconnect(),
+-  ping: () => getRedisClient().ping(),
+-  quit: () => getRedisClient().quit(),
+-  isOpen: Object.defineProperty({}, 'isOpen', {
+-    get: () => getRedisClient().isOpen,
+-  }) as any,
+-  on: (event: string, callback: (...args: any[]) => void) => {
+-    getRedisClient().on(event, callback)
+-  },
+-} as unknown as RedisClientType
+-
+-// Lazy-loaded Bull queue - only initialize when first needed
+-let _scraperQueue: Queue.Queue | null = null
+-
+-function initializeQueue() {
+-  if (!_scraperQueue) {
+-    _scraperQueue = new Queue('dublin-events-scraper', {
+-      redis: redisUrl,
+-    })
+-
+-    // Queue event handlers
+-    _scraperQueue.on('error', (error) => {
+-      console.error('[Scraper Queue] Error:', error)
+-    })
+-
+-    _scraperQueue.on('waiting', (jobId) => {
+-      console.log(`[Scraper Queue] Job ${jobId} is waiting`)
+-    })
+-
+-    _scraperQueue.on('active', (job) => {
+-      console.log(`[Scraper Queue] Job ${job.id} is active`)
+-    })
+-
+-    _scraperQueue.on('completed', (job) => {
+-      console.log(`[Scraper Queue] Job ${job.id} completed successfully`)
+-    })
+-
+-    _scraperQueue.on('failed', (job, err) => {
+-      console.error(`[Scraper Queue] Job ${job.id} failed:`, err.message)
+-    })
+-
+-    _scraperQueue.on('stalled', (job) => {
+-      console.warn(`[Scraper Queue] Job ${job.id} has stalled`)
+-    })
+-  }
+-  return _scraperQueue
+-}
+-
+-export function getScraperQueue(): Queue.Queue {
+-  return initializeQueue()
+-}
+-
+-// Export as lazy-initialized object to match initializeQueue.ts usage
+-export const scraperQueue = {
+-  add: (data: any, opts?: any) => getScraperQueue().add(data, opts),
+-  process: (concurrency: number, fn: any) => getScraperQueue().process(concurrency, fn),
+-  on: (event: string, callback: (...args: any[]) => void) => {
+-    getScraperQueue().on(event, callback)
+-  },
+-  clean: (maxAge: number, status?: any) => getScraperQueue().clean(maxAge, status),
+-  getJobCounts: () => getScraperQueue().getJobCounts(),
+-  getRepeatableJobs: () => getScraperQueue().getRepeatableJobs(),
+-  removeRepeatableByKey: (key: string) => getScraperQueue().removeRepeatableByKey(key),
+-  pause: () => getScraperQueue().pause(),
+-  resume: () => getScraperQueue().resume(),
+-  close: () => getScraperQueue().close(),
+-} as unknown as Queue.Queue
+-
+-// Clean up old jobs periodically
+-export async function cleanupOldJobs() {
+-  try {
+-    const maxAge = 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
+-    await scraperQueue.clean(maxAge, 'completed')
+-    console.log('[Queue] Cleaned up old jobs')
+-  } catch (error) {
+-    console.error('[Queue] Error cleaning up old jobs:', error)
+-  }
+-}
+-
+-// Get queue status
+-export async function getQueueStatus() {
+-  try {
+-    const counts = await scraperQueue.getJobCounts()
+-    return {
+-      waiting: counts.waiting,
+-      active: counts.active,
+-      completed: counts.completed,
+-      failed: counts.failed,
+-      delayed: counts.delayed,
+-    }
+-  } catch (error) {
+-    console.error('[Queue] Error getting queue status:', error)
+-    return null
+-  }
+-}
+-
+-// Check queue health
+-export async function checkQueueHealth() {
+-  try {
+-    await redisClient.connect()
+-    const ping = await redisClient.ping()
+-    await redisClient.disconnect()
+-
+-    return {
+-      healthy: ping === 'PONG',
+-      redis: ping === 'PONG' ? 'connected' : 'disconnected',
+-      error: null,
+-    }
+-  } catch (error) {
+-    console.error('[Queue] Health check error:', error)
+-    return {
+-      healthy: false,
+-      redis: 'error',
+-      error: error instanceof Error ? error.message : 'Unknown error',
+-    }
+-  }
+-}
+-
+-// Pause queue
+-export async function pauseQueue() {
+-  try {
+-    await scraperQueue.pause()
+-    console.log('[Queue] Queue paused')
+-  } catch (error) {
+-    console.error('[Queue] Error pausing queue:', error)
+-  }
+-}
+-
+-// Resume queue
+-export async function resumeQueue() {
+-  try {
+-    await scraperQueue.resume()
+-    console.log('[Queue] Queue resumed')
+-  } catch (error) {
+-    console.error('[Queue] Error resuming queue:', error)
+-  }
+-}
+-
+-export default scraperQueue
+diff --git a/Claude outputs/push-update.bat b/Claude outputs/push-update.bat
+deleted file mode 100644
+index ca8ddde..0000000
+--- a/Claude outputs/push-update.bat	
++++ /dev/null
+@@ -1,44 +0,0 @@
+-@echo off
+-cd /d "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-
+-echo.
+-echo ========================================
+-echo Committing Next.js Configuration Update
+-echo ========================================
+-echo.
+-
+-echo Checking git status...
+-git status
+-
+-echo.
+-echo Staging next.config.js...
+-git add next.config.js
+-
+-echo.
+-echo Committing changes...
+-git commit -m "fix: increase static generation timeout and disable ISR cache
+-
+-The previous timeout of 0ms was causing immediate failure during build.
+-Set timeout to 5 minutes (300000ms) to allow build to complete.
+-Also disable ISR memory cache to reduce memory usage during build phase.
+-
+-These settings combined with force-dynamic export on root layout should
+-prevent out-of-memory errors during 'Collecting page data' phase."
+-
+-echo.
+-echo Pushing to GitHub...
+-git push origin main
+-
+-echo.
+-if %ERRORLEVEL% EQU 0 (
+-    echo.
+-    echo ✓ SUCCESS! Changes pushed to GitHub.
+-    echo Railway will automatically redeploy via webhook.
+-    echo.
+-    pause
+-) else (
+-    echo.
+-    echo ✗ ERROR! Push failed. Check git status and try again.
+-    echo.
+-    pause
+-)
+diff --git a/Claude outputs/route.ts b/Claude outputs/route.ts
+deleted file mode 100644
+index 4994f74..0000000
+--- a/Claude outputs/route.ts	
++++ /dev/null
+@@ -1,89 +0,0 @@
+-import { NextResponse } from 'next/server'
+-import { PrismaClient } from '@prisma/client'
+-
+-const prisma = new PrismaClient()
+-
+-export async function GET() {
+-  try {
+-    // Get all sources with their event counts and last scrape info
+-    const sources = await prisma.source.findMany({
+-      include: {
+-        _count: {
+-          select: { eventSources: true },
+-        },
+-      },
+-      orderBy: {
+-        name: 'asc',
+-      },
+-    })
+-
+-    const sourcesWithStats = sources.map((source: any) => {
+-      const lastScrapedAt = source.lastScrapedAt
+-        ? new Date(source.lastScrapedAt)
+-        : null
+-      const nextScrapedAt = source.nextScrapedAt
+-        ? new Date(source.nextScrapedAt)
+-        : null
+-
+-      // Calculate days since last scrape
+-      let daysSinceLastScrape: number | null = null
+-      if (lastScrapedAt) {
+-        daysSinceLastScrape = Math.floor(
+-          (Date.now() - lastScrapedAt.getTime()) / (1000 * 60 * 60 * 24)
+-        )
+-      }
+-
+-      return {
+-        id: source.id,
+-        name: source.name,
+-        url: source.url,
+-        scraperType: source.scraperType,
+-        status: source.scraperStatus,
+-        eventCount: source._count.eventSources,
+-        lastScrapedAt: lastScrapedAt?.toISOString() || null,
+-        nextScrapedAt: nextScrapedAt?.toISOString() || null,
+-        daysSinceLastScrape,
+-        isStale: daysSinceLastScrape !== null && daysSinceLastScrape > 7,
+-      }
+-    })
+-
+-    // Group by status
+-    const statusCounts = sourcesWithStats.reduce(
+-      (acc: any, source: any) => {
+-        acc[source.status || 'unknown'] = (acc[source.status || 'unknown'] || 0) + 1
+-        return acc
+-      },
+-      {} as Record<string, number>
+-    )
+-
+-    // Calculate overall health
+-    const activeCount = sourcesWithStats.filter(
+-      (s: any) => s.status === 'active' && !s.isStale
+-    ).length
+-    const healthPercentage = (activeCount / sourcesWithStats.length) * 100
+-
+-    return NextResponse.json({
+-      sources: sourcesWithStats,
+-      summary: {
+-        totalSources: sourcesWithStats.length,
+-        activeSources: statusCounts['active'] || 0,
+-        inactiveSources: statusCounts['broken'] || 0,
+-        disabledSources: statusCounts['disabled'] || 0,
+-        staleSources: sourcesWithStats.filter((s: any) => s.isStale).length,
+-        healthPercentage: Math.round(healthPercentage),
+-      },
+-      metadata: {
+-        timestamp: new Date().toISOString(),
+-        nextScheduledRun: '2:00 AM Europe/Dublin',
+-      },
+-    })
+-  } catch (error) {
+-    console.error('Sources API error:', error)
+-    return NextResponse.json(
+-      { error: 'Failed to fetch sources' },
+-      { status: 500 }
+-    )
+-  } finally {
+-    await prisma.$disconnect()
+-  }
+-}
+diff --git a/commit-and-push.bat b/commit-and-push.bat
+deleted file mode 100644
+index 95fe00a..0000000
+--- a/commit-and-push.bat
++++ /dev/null
+@@ -1,9 +0,0 @@
+-@echo off
+-cd "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-git add src/app/api/stats/route.ts
+-git add src/app/api/venues/route.ts
+-git add src/app/api/genres/route.ts
+-git add src/app/api/sources/route.ts
+-git commit -m "Fix: Add dynamic rendering to API routes to prevent build-time errors"
+-git push origin main
+-pause
+diff --git a/commit-and-push.ps1 b/commit-and-push.ps1
+deleted file mode 100644
+index 59a1cc0..0000000
+--- a/commit-and-push.ps1
++++ /dev/null
+@@ -1,26 +0,0 @@
+-# Navigate to the repository
+-cd "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-
+-# Add the modified files
+-git add src/app/api/stats/route.ts
+-git add src/app/api/venues/route.ts
+-git add src/app/api/genres/route.ts
+-git add src/app/api/sources/route.ts
+-
+-# Commit with a descriptive message
+-git commit -m "Fix: Add dynamic rendering to API routes to prevent build-time errors
+-
+-- Added 'export const dynamic = force-dynamic' to:
+-  - src/app/api/stats/route.ts
+-  - src/app/api/venues/route.ts
+-  - src/app/api/genres/route.ts
+-  - src/app/api/sources/route.ts
+-
+-This prevents PrismaClientInitializationError during static generation
+-and allows proper runtime database access for request-dependent routes."
+-
+-# Push to GitHub
+-git push origin main
+-
+-# Display completion status
+-Write-Host "Commit and push completed successfully!"
+diff --git a/commit-and-push.vbs b/commit-and-push.vbs
+deleted file mode 100644
+index fcf1224..0000000
+--- a/commit-and-push.vbs
++++ /dev/null
+@@ -1,3 +0,0 @@
+-Set objShell = CreateObject("WScript.Shell")
+-strCmd = "cd /d C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete && git add src/app/api/stats/route.ts && git add src/app/api/venues/route.ts && git add src/app/api/genres/route.ts && git add src/app/api/sources/route.ts && git commit -m ""Fix: Add dynamic rendering to API routes to prevent build-time errors"" && git push origin main"
+-objShell.Run strCmd, 0, True
+diff --git a/commit-fix.bat b/commit-fix.bat
+deleted file mode 100644
+index ee25079..0000000
+--- a/commit-fix.bat
++++ /dev/null
+@@ -1,52 +0,0 @@
+-@echo off
+-cd /d "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-
+-echo.
+-echo ========================================
+-echo Committing Dublin Events App Fixes
+-echo ========================================
+-echo.
+-
+-echo Staging files...
+-git add next.config.js
+-git add "src/app/api/events/route.ts"
+-git add "src/app/api/events/[id]/route.ts"
+-git add "src/app/api/queue/health/route.ts"
+-
+-echo.
+-echo Git Status:
+-git status
+-
+-echo.
+-echo Committing changes...
+-git commit -m "fix: add dynamic route export and clean next.config.js
+-
+-Problems:
+-1. API routes attempting static generation requiring DATABASE_URL
+-2. Invalid config option isrMemoryCacheSize
+-3. Prisma queries failing during Collecting page data phase
+-
+-Solutions:
+-1. Added export const dynamic = force-dynamic to all API routes
+-2. Removed invalid configuration options from next.config.js
+-3. Simplified next.config.js to essential configuration only
+-
+-Result: All API routes skip static generation and render dynamically"
+-
+-echo.
+-echo Pushing to GitHub...
+-git push origin main
+-
+-if %ERRORLEVEL% EQU 0 (
+-    echo.
+-    echo ✓ SUCCESS! Changes pushed to GitHub
+-    echo Railway webhook triggered - deployment in progress
+-    echo.
+-    pause
+-) else (
+-    echo.
+-    echo ✗ ERROR during push!
+-    echo.
+-    pause
+-    exit /b 1
+-)
+diff --git a/deploy-fixes.bat b/deploy-fixes.bat
+deleted file mode 100644
+index 6d737fa..0000000
+--- a/deploy-fixes.bat
++++ /dev/null
+@@ -1,54 +0,0 @@
+-@echo off
+-setlocal enabledelayedexpansion
+-
+-cd /d "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-
+-echo.
+-echo ========================================
+-echo Deploying Dublin Events App Fixes
+-echo ========================================
+-echo.
+-
+-echo Staging fixed files...
+-git add next.config.js
+-git add "src/app/api/events/route.ts"
+-git add "src/app/api/events/[id]/route.ts"
+-git add "src/app/api/queue/health/route.ts"
+-
+-echo.
+-echo Git Status:
+-git status
+-
+-echo.
+-echo Committing changes...
+-git commit -m "fix: add dynamic route export and clean next.config.js
+-
+-Problems:
+-1. API routes attempting static generation requiring DATABASE_URL
+-2. Invalid config option isrMemoryCacheSize
+-3. Prisma queries failing during Collecting page data phase
+-
+-Solutions:
+-1. Added export const dynamic = 'force-dynamic' to all API routes
+-2. Removed invalid configuration options from next.config.js
+-3. Simplified next.config.js to essential configuration only
+-
+-Result: All API routes skip static generation and render dynamically"
+-
+-echo.
+-echo Pushing to GitHub...
+-git push origin main
+-
+-if %ERRORLEVEL% EQU 0 (
+-    echo.
+-    echo ✓ SUCCESS! Changes pushed to GitHub
+-    echo Railway webhook triggered - deployment in progress
+-    echo.
+-    timeout /t 5
+-) else (
+-    echo.
+-    echo ✗ ERROR during push!
+-    echo.
+-    timeout /t 5
+-    exit /b 1
+-)
+diff --git a/execute-git-sync.vbs b/execute-git-sync.vbs
+deleted file mode 100644
+index 126a38c..0000000
+--- a/execute-git-sync.vbs
++++ /dev/null
+@@ -1,2 +0,0 @@
+-Set objShell = CreateObject("WScript.Shell")
+-objShell.Run "powershell.exe -NoExit -ExecutionPolicy Bypass -Command ""& 'C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete\git-sync.ps1'""", 1, True
+diff --git a/final-push.bat b/final-push.bat
+deleted file mode 100644
+index e28c592..0000000
+--- a/final-push.bat
++++ /dev/null
+@@ -1,30 +0,0 @@
+-@echo off
+-cd /d "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-
+-echo.
+-echo ========================================
+-echo COMMITTING AND PUSHING CORRECTED FILE
+-echo ========================================
+-echo.
+-
+-echo [1/2] Adding corrected file...
+-git add src/app/api/jobs/scrape/route.ts
+-
+-echo [2/2] Committing and pushing...
+-git commit -m "Fix: Correct template literal syntax in scrape route"
+-git push origin main -v
+-
+-if %errorlevel% equ 0 (
+-    echo.
+-    echo ========================================
+-    echo SUCCESS! Changes pushed to GitHub!
+-    echo ========================================
+-    echo Railway deployment will start automatically.
+-    echo.
+-) else (
+-    echo.
+-    echo ERROR during commit/push
+-    echo.
+-)
+-
+-pause
+diff --git a/final-verify.ps1 b/final-verify.ps1
+deleted file mode 100644
+index 5724d75..0000000
+--- a/final-verify.ps1
++++ /dev/null
+@@ -1,38 +0,0 @@
+-$ErrorActionPreference = "Continue"
+-cd "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-
+-try {
+-    $output = @()
+-    $output += "=== Verification Report ==="
+-    $output += ""
+-    
+-    # Check git status
+-    $output += "Git Status:"
+-    $status = & git status --porcelain
+-    if ($status) {
+-        $output += "Uncommitted changes found:"
+-        $output += $status
+-    } else {
+-        $output += "Working tree clean - no uncommitted changes"
+-    }
+-    $output += ""
+-    
+-    # Check latest commit
+-    $output += "Latest commit:"
+-    $commit = & git log -1 --oneline
+-    $output += $commit
+-    $output += ""
+-    
+-    # Check if origin/main is up to date
+-    $output += "Branch tracking:"
+-    $branch = & git branch -vv
+-    $output += $branch
+-    
+-    $output | Out-File -FilePath "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete\final-verify.txt" -Encoding UTF8
+-    Write-Host "Verification complete. Results written to final-verify.txt"
+-}
+-catch {
+-    $error = $_.Exception.Message
+-    $error | Out-File -FilePath "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete\final-verify.txt" -Encoding UTF8
+-    Write-Host "Error: $error"
+-}
+diff --git a/fix-static-generation.bat b/fix-static-generation.bat
+deleted file mode 100644
+index 0decbea..0000000
+--- a/fix-static-generation.bat
++++ /dev/null
+@@ -1,59 +0,0 @@
+-@echo off
+-cd /d "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-
+-echo.
+-echo ========================================
+-echo Fixing Static Generation Issue
+-echo ========================================
+-echo.
+-
+-echo Checking git status...
+-git status
+-
+-echo.
+-echo Staging modified files...
+-git add next.config.js src/app/page.tsx src/app/dashboard/page.tsx "src/app/events/[id]/page.tsx"
+-
+-echo.
+-echo Committing changes...
+-git commit -m "fix: disable static generation with proper Next.js configuration
+-
+-Problem: Client components were incorrectly marked with 'export const dynamic = force-dynamic',
+-but this directive is ignored by Next.js for client components. The build still attempted
+-static page generation during 'Collecting page data' phase, causing out-of-memory errors.
+-
+-Solution:
+-1. Removed 'export const dynamic' directives from all client components (page.tsx files)
+-2. Kept the directive only in root layout.tsx (server component where it actually works)
+-3. Added 'staticPageGenerationTimeout: 0' to next.config.js to disable SSG entirely
+-
+-This ensures:
+-- No static generation is attempted during build
+-- Pages render dynamically on-demand
+-- No memory exhaustion during build process
+-- App deploys and runs successfully
+-
+-Files modified:
+-- next.config.js: Added staticPageGenerationTimeout configuration
+-- src/app/page.tsx: Removed incorrect force-dynamic export
+-- src/app/dashboard/page.tsx: Removed incorrect force-dynamic export
+-- src/app/events/[id]/page.tsx: Removed incorrect force-dynamic export
+-- src/app/layout.tsx: Kept force-dynamic (server component)"
+-
+-echo.
+-echo Pushing to GitHub...
+-git push origin main
+-
+-echo.
+-if %ERRORLEVEL% EQU 0 (
+-    echo.
+-    echo ✓ SUCCESS! Changes pushed to GitHub.
+-    echo Railway will automatically redeploy via webhook.
+-    echo.
+-    pause
+-) else (
+-    echo.
+-    echo ✗ ERROR! Push failed. Check git status and try again.
+-    echo.
+-    pause
+-)
+diff --git a/git-commands.bat b/git-commands.bat
+deleted file mode 100644
+index 925dc04..0000000
+--- a/git-commands.bat
++++ /dev/null
+@@ -1,8 +0,0 @@
+-@echo off
+-cd /d "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-git add src/lib/queue/bullConfig.ts
+-git commit -m "Fix: Revert default export to scraperQueue Proxy"
+-git push origin main
+-echo.
+-echo Push completed!
+-pause
+diff --git a/git-push-verbose.bat b/git-push-verbose.bat
+deleted file mode 100644
+index fc3c0d5..0000000
+--- a/git-push-verbose.bat
++++ /dev/null
+@@ -1,40 +0,0 @@
+-@echo off
+-setlocal enabledelayedexpansion
+-
+-cd /d "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-
+-echo.
+-echo ========================================
+-echo GIT PUSH DIAGNOSTIC
+-echo ========================================
+-echo.
+-
+-echo [1/3] Checking git status...
+-git status
+-echo.
+-
+-echo [2/3] Checking remote configuration...
+-git remote -v
+-echo.
+-
+-echo [3/3] Attempting push with verbose output...
+-git push origin main -v
+-if %errorlevel% equ 0 (
+-    echo.
+-    echo ========================================
+-    echo SUCCESS! Push completed.
+-    echo ========================================
+-    echo.
+-) else (
+-    echo.
+-    echo ========================================
+-    echo ERROR CODE: %errorlevel%
+-    echo ========================================
+-    echo The push failed. Common reasons:
+-    echo - GitHub credentials not configured
+-    echo - SSH key not set up
+-    echo - Network connection issue
+-    echo.
+-)
+-
+-pause
+diff --git a/git-status-check.ps1 b/git-status-check.ps1
+deleted file mode 100644
+index a952d19..0000000
+--- a/git-status-check.ps1
++++ /dev/null
+@@ -1,9 +0,0 @@
+-cd "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-$status = git status --porcelain src/lib/queue/bullConfig.ts
+-if ($status) {
+-    "UNCOMMITTED" | Out-File -FilePath "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete\git-check-result.txt"
+-} else {
+-    "COMMITTED" | Out-File -FilePath "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete\git-check-result.txt"
+-    "Latest commit:" | Add-Content -Path "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete\git-check-result.txt"
+-    git log -1 --oneline | Add-Content -Path "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete\git-check-result.txt"
+-}
+diff --git a/git-sync.ps1 b/git-sync.ps1
+deleted file mode 100644
+index b0bf4ef..0000000
+--- a/git-sync.ps1
++++ /dev/null
+@@ -1,13 +0,0 @@
+-Set-Location "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-
+-Write-Host "Step 1: Pulling latest from origin/main..."
+-git pull origin main
+-
+-Write-Host "`nStep 2: Stashing uncommitted changes..."
+-git stash
+-
+-Write-Host "`nStep 3: Pushing local commits to origin/main..."
+-git push origin main
+-
+-Write-Host "`nGit sync complete!"
+-Read-Host "Press Enter to exit"
+diff --git a/push-dynamic-fixes.bat b/push-dynamic-fixes.bat
+deleted file mode 100644
+index b8ffbb7..0000000
+--- a/push-dynamic-fixes.bat
++++ /dev/null
+@@ -1,29 +0,0 @@
+-@echo off
+-cd /d "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-
+-echo Staging files...
+-git add src\app\layout.tsx src\app\page.tsx src\app\dashboard\page.tsx "src\app\events\[id]\page.tsx"
+-
+-echo Committing changes...
+-git commit -m "feat: disable static generation for all pages to fix deployment memory issue
+-
+-- Added 'export const dynamic = force-dynamic' to root layout.tsx
+-- Added 'export const dynamic = force-dynamic' to home page (page.tsx)
+-- Added 'export const dynamic = force-dynamic' to dashboard page
+-- Added 'export const dynamic = force-dynamic' to event detail page
+-
+-These changes prevent Next.js from attempting static site generation (SSG) at build time, which was causing out-of-memory errors when collecting page data for all 200+ event pages. With dynamic rendering enabled, pages are rendered on-demand instead."
+-
+-echo Pushing to GitHub...
+-git push origin main
+-
+-if %ERRORLEVEL% EQU 0 (
+-    echo.
+-    echo ✓ Success! Changes pushed to GitHub.
+-    echo Railway will automatically redeploy via webhook.
+-    pause
+-) else (
+-    echo.
+-    echo ✗ Error! Push failed. Check git status and try again.
+-    pause
+-)
+diff --git a/push-fixes.ps1 b/push-fixes.ps1
+deleted file mode 100644
+index b5f4b6a..0000000
+--- a/push-fixes.ps1
++++ /dev/null
+@@ -1,7 +0,0 @@
+-cd "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-git add src/app/api/stats/route.ts src/app/api/venues/route.ts src/app/api/genres/route.ts src/app/api/sources/route.ts
+-git commit -m "fix: add dynamic route export to remaining API routes
+-
+-Add export const dynamic = 'force-dynamic' to all data-dependent API routes
+-to prevent static generation attempts at build time."
+-git push
+diff --git a/push-to-github.bat b/push-to-github.bat
+deleted file mode 100644
+index d81853a..0000000
+--- a/push-to-github.bat
++++ /dev/null
+@@ -1,24 +0,0 @@
+-@echo off
+-cd /d "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-echo.
+-echo Pushing commit to GitHub...
+-echo.
+-git push origin main
+-if %errorlevel% equ 0 (
+-    echo.
+-    echo ========================================
+-    echo SUCCESS! Commit pushed to GitHub.
+-    echo ========================================
+-    echo Railway deployment should start automatically.
+-    echo Check the Railway dashboard in a few moments.
+-    echo.
+-    pause
+-) else (
+-    echo.
+-    echo ========================================
+-    echo ERROR: Git push failed.
+-    echo ========================================
+-    echo Please check your GitHub credentials are configured.
+-    echo.
+-    pause
+-)
+diff --git a/run-git-commands.bat b/run-git-commands.bat
+deleted file mode 100644
+index c93b29b..0000000
+--- a/run-git-commands.bat
++++ /dev/null
+@@ -1,6 +0,0 @@
+-@echo off
+-cd /d "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-schtasks /create /tn "GitCommitAndPush" /tr "cmd /c git add src/app/api/stats/route.ts src/app/api/venues/route.ts src/app/api/genres/route.ts src/app/api/sources/route.ts && git commit -m \"Fix: Add dynamic rendering to API routes to prevent build-time errors\" && git push origin main" /sc once /st 00:00 /f 2>nul
+-schtasks /run /tn "GitCommitAndPush" /f
+-schtasks /delete /tn "GitCommitAndPush" /f 2>nul
+-pause
+diff --git a/run-git-commands.ps1 b/run-git-commands.ps1
+deleted file mode 100644
+index 8babe6f..0000000
+--- a/run-git-commands.ps1
++++ /dev/null
+@@ -1,5 +0,0 @@
+-cd "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-git add src/lib/queue/bullConfig.ts
+-git commit -m "Fix: Rename unused Proxy target parameter to _target"
+-git push origin main
+-echo "Git commands completed successfully!"
+diff --git a/run-git-sync.bat b/run-git-sync.bat
+deleted file mode 100644
+index c47fb9a..0000000
+--- a/run-git-sync.bat
++++ /dev/null
+@@ -1,4 +0,0 @@
+-@echo off
+-cd /d "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-powershell.exe -ExecutionPolicy Bypass -File git-sync.ps1
+-pause
+diff --git a/run-git-with-log.bat b/run-git-with-log.bat
+deleted file mode 100644
+index d154b14..0000000
+--- a/run-git-with-log.bat
++++ /dev/null
+@@ -1,40 +0,0 @@
+-@echo off
+-setlocal enabledelayedexpansion
+-
+-REM Create log file path
+-set logfile=C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete\git-commands.log
+-
+-REM Write start message
+-echo [%date% %time%] Starting git commit and push... > "%logfile%"
+-
+-REM Change to repository directory
+-cd /d "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete" >> "%logfile%" 2>&1
+-
+-REM Check if git is available
+-git --version >> "%logfile%" 2>&1
+-
+-REM Add files
+-echo [%date% %time%] Adding files... >> "%logfile%"
+-git add src/app/api/stats/route.ts >> "%logfile%" 2>&1
+-git add src/app/api/venues/route.ts >> "%logfile%" 2>&1
+-git add src/app/api/genres/route.ts >> "%logfile%" 2>&1
+-git add src/app/api/sources/route.ts >> "%logfile%" 2>&1
+-
+-REM Check git status
+-echo [%date% %time%] Git status: >> "%logfile%"
+-git status >> "%logfile%" 2>&1
+-
+-REM Commit
+-echo [%date% %time%] Committing changes... >> "%logfile%"
+-git commit -m "Fix: Add dynamic rendering to API routes to prevent build-time errors" >> "%logfile%" 2>&1
+-
+-REM Push
+-echo [%date% %time%] Pushing to GitHub... >> "%logfile%"
+-git push origin main >> "%logfile%" 2>&1
+-
+-REM Write completion message
+-echo [%date% %time%] Completed! >> "%logfile%"
+-
+-REM Display the log file
+-type "%logfile%"
+-pause
+diff --git a/src/lib/queue/bullConfig-1.ts b/src/lib/queue/bullConfig-1.ts
+deleted file mode 100644
+index 37b8cff..0000000
+--- a/src/lib/queue/bullConfig-1.ts
++++ /dev/null
+@@ -1,173 +0,0 @@
+-import Queue from 'bull'
+-import { createClient, RedisClientType } from 'redis'
+-
+-// Get Redis connection URL from environment or use default
+-const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
+-
+-// Lazy-loaded Redis client - only initialize when first needed
+-let _redisClient: RedisClientType | null = null
+-
+-export function getRedisClient(): RedisClientType {
+-  if (!_redisClient) {
+-    _redisClient = createClient({
+-      url: redisUrl,
+-    })
+-
+-    // Event handlers for Redis client
+-    _redisClient.on('error', (err) => {
+-      console.error('Redis client error:', err)
+-    })
+-
+-    _redisClient.on('connect', () => {
+-      console.log('[Queue] Redis client connected')
+-    })
+-
+-    _redisClient.on('ready', () => {
+-      console.log('[Queue] Redis client ready')
+-    })
+-  }
+-  return _redisClient
+-}
+-
+-// Export as lazy-initialized object to match initializeQueue.ts usage
+-export const redisClient = {
+-  connect: () => getRedisClient().connect(),
+-  disconnect: () => getRedisClient().disconnect(),
+-  ping: () => getRedisClient().ping(),
+-  quit: () => getRedisClient().quit(),
+-  isOpen: Object.defineProperty({}, 'isOpen', {
+-    get: () => getRedisClient().isOpen,
+-  }) as any,
+-  on: (event: string, callback: (...args: any[]) => void) => {
+-    getRedisClient().on(event, callback)
+-  },
+-} as unknown as RedisClientType
+-
+-// Lazy-loaded Bull queue - only initialize when first needed
+-let _scraperQueue: Queue.Queue | null = null
+-
+-function initializeQueue() {
+-  if (!_scraperQueue) {
+-    _scraperQueue = new Queue('dublin-events-scraper', {
+-      redis: redisUrl,
+-    })
+-
+-    // Queue event handlers
+-    _scraperQueue.on('error', (error) => {
+-      console.error('[Scraper Queue] Error:', error)
+-    })
+-
+-    _scraperQueue.on('waiting', (jobId) => {
+-      console.log(`[Scraper Queue] Job ${jobId} is waiting`)
+-    })
+-
+-    _scraperQueue.on('active', (job) => {
+-      console.log(`[Scraper Queue] Job ${job.id} is active`)
+-    })
+-
+-    _scraperQueue.on('completed', (job) => {
+-      console.log(`[Scraper Queue] Job ${job.id} completed successfully`)
+-    })
+-
+-    _scraperQueue.on('failed', (job, err) => {
+-      console.error(`[Scraper Queue] Job ${job.id} failed:`, err.message)
+-    })
+-
+-    _scraperQueue.on('stalled', (job) => {
+-      console.warn(`[Scraper Queue] Job ${job.id} has stalled`)
+-    })
+-  }
+-  return _scraperQueue
+-}
+-
+-export function getScraperQueue(): Queue.Queue {
+-  return initializeQueue()
+-}
+-
+-// Export as lazy-initialized object to match initializeQueue.ts usage
+-export const scraperQueue = {
+-  add: (data: any, opts?: any) => getScraperQueue().add(data, opts),
+-  process: (concurrency: number, fn: any) => getScraperQueue().process(concurrency, fn),
+-  on: (event: string, callback: (...args: any[]) => void) => {
+-    getScraperQueue().on(event, callback)
+-  },
+-  clean: (maxAge: number, status?: any) => getScraperQueue().clean(maxAge, status),
+-  getJobCounts: () => getScraperQueue().getJobCounts(),
+-  getRepeatableJobs: () => getScraperQueue().getRepeatableJobs(),
+-  removeRepeatableByKey: (key: string) => getScraperQueue().removeRepeatableByKey(key),
+-  pause: () => getScraperQueue().pause(),
+-  resume: () => getScraperQueue().resume(),
+-  close: () => getScraperQueue().close(),
+-} as unknown as Queue.Queue
+-
+-// Clean up old jobs periodically
+-export async function cleanupOldJobs() {
+-  try {
+-    const maxAge = 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
+-    await scraperQueue.clean(maxAge, 'completed')
+-    console.log('[Queue] Cleaned up old jobs')
+-  } catch (error) {
+-    console.error('[Queue] Error cleaning up old jobs:', error)
+-  }
+-}
+-
+-// Get queue status
+-export async function getQueueStatus() {
+-  try {
+-    const counts = await scraperQueue.getJobCounts()
+-    return {
+-      waiting: counts.waiting,
+-      active: counts.active,
+-      completed: counts.completed,
+-      failed: counts.failed,
+-      delayed: counts.delayed,
+-    }
+-  } catch (error) {
+-    console.error('[Queue] Error getting queue status:', error)
+-    return null
+-  }
+-}
+-
+-// Check queue health
+-export async function checkQueueHealth() {
+-  try {
+-    await redisClient.connect()
+-    const ping = await redisClient.ping()
+-    await redisClient.disconnect()
+-
+-    return {
+-      healthy: ping === 'PONG',
+-      redis: ping === 'PONG' ? 'connected' : 'disconnected',
+-      error: null,
+-    }
+-  } catch (error) {
+-    console.error('[Queue] Health check error:', error)
+-    return {
+-      healthy: false,
+-      redis: 'error',
+-      error: error instanceof Error ? error.message : 'Unknown error',
+-    }
+-  }
+-}
+-
+-// Pause queue
+-export async function pauseQueue() {
+-  try {
+-    await scraperQueue.pause()
+-    console.log('[Queue] Queue paused')
+-  } catch (error) {
+-    console.error('[Queue] Error pausing queue:', error)
+-  }
+-}
+-
+-// Resume queue
+-export async function resumeQueue() {
+-  try {
+-    await scraperQueue.resume()
+-    console.log('[Queue] Queue resumed')
+-  } catch (error) {
+-    console.error('[Queue] Error resuming queue:', error)
+-  }
+-}
+-
+-export default scraperQueue
+diff --git a/src/lib/queue/bullConfig.ts.backup b/src/lib/queue/bullConfig.ts.backup
+deleted file mode 100644
+index 9d7166d..0000000
+--- a/src/lib/queue/bullConfig.ts.backup
++++ /dev/null
+@@ -1,169 +0,0 @@
+-import Queue from 'bull'
+-import { createClient, RedisClientType } from 'redis'
+-
+-// Get Redis connection URL from environment or use default
+-const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
+-
+-// Lazy-loaded Redis client - only initialize when first needed
+-let _redisClient: RedisClientType | null = null
+-
+-export function getRedisClient(): RedisClientType {
+-  if (!_redisClient) {
+-    _redisClient = createClient({
+-      url: redisUrl,
+-    })
+-
+-    // Event handlers for Redis client
+-    _redisClient.on('error', (err) => {
+-      console.error('Redis client error:', err)
+-    })
+-
+-    _redisClient.on('connect', () => {
+-      console.log('[Queue] Redis client connected')
+-    })
+-
+-    _redisClient.on('ready', () => {
+-      console.log('[Queue] Redis client ready')
+-    })
+-  }
+-  return _redisClient
+-}
+-
+-// Export as lazy-initialized object to match initializeQueue.ts usage
+-export const redisClient = {
+-  connect: () => getRedisClient().connect(),
+-  disconnect: () => getRedisClient().disconnect(),
+-  ping: () => getRedisClient().ping(),
+-  quit: () => getRedisClient().quit(),
+-  isOpen: Object.defineProperty({}, 'isOpen', {
+-    get: () => getRedisClient().isOpen,
+-  }) as any,
+-  on: (event: string, callback: (...args: any[]) => void) => {
+-    getRedisClient().on(event, callback)
+-  },
+-} as unknown as RedisClientType
+-
+-// Lazy-loaded Bull queue - only initialize when first needed
+-let _scraperQueue: Queue.Queue | null = null
+-
+-export function getScraperQueue(): Queue.Queue {
+-  if (!_scraperQueue) {
+-    _scraperQueue = new Queue('dublin-events-scraper', {
+-      redis: redisUrl,
+-    })
+-
+-    // Queue event handlers
+-    _scraperQueue.on('error', (error) => {
+-      console.error('[Scraper Queue] Error:', error)
+-    })
+-
+-    _scraperQueue.on('waiting', (jobId) => {
+-      console.log(`[Scraper Queue] Job ${jobId} is waiting`)
+-    })
+-
+-    _scraperQueue.on('active', (job) => {
+-      console.log(`[Scraper Queue] Job ${job.id} is active`)
+-    })
+-
+-    _scraperQueue.on('completed', (job) => {
+-      console.log(`[Scraper Queue] Job ${job.id} completed successfully`)
+-    })
+-
+-    _scraperQueue.on('failed', (job, err) => {
+-      console.error(`[Scraper Queue] Job ${job.id} failed:`, err.message)
+-    })
+-
+-    _scraperQueue.on('stalled', (job) => {
+-      console.warn(`[Scraper Queue] Job ${job.id} has stalled`)
+-    })
+-  }
+-  return _scraperQueue
+-}
+-
+-// Export as lazy-initialized object to match initializeQueue.ts usage
+-export const scraperQueue = {
+-  add: (data: any, opts?: any) => getScraperQueue().add(data, opts),
+-  process: (concurrency: number, fn: any) => getScraperQueue().process(concurrency, fn),
+-  on: (event: string, callback: (...args: any[]) => void) => {
+-    getScraperQueue().on(event, callback)
+-  },
+-  clean: (maxAge: number, status?: any) => getScraperQueue().clean(maxAge, status),
+-  getJobCounts: () => getScraperQueue().getJobCounts(),
+-  getRepeatableJobs: () => getScraperQueue().getRepeatableJobs(),
+-  removeRepeatableByKey: (key: string) => getScraperQueue().removeRepeatableByKey(key),
+-  pause: () => getScraperQueue().pause(),
+-  resume: () => getScraperQueue().resume(),
+-  close: () => getScraperQueue().close(),
+-} as unknown as Queue.Queue
+-
+-// Clean up old jobs periodically
+-export async function cleanupOldJobs() {
+-  try {
+-    const maxAge = 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
+-    await scraperQueue.clean(maxAge, 'completed')
+-    console.log('[Queue] Cleaned up old jobs')
+-  } catch (error) {
+-    console.error('[Queue] Error cleaning up old jobs:', error)
+-  }
+-}
+-
+-// Get queue status
+-export async function getQueueStatus() {
+-  try {
+-    const counts = await scraperQueue.getJobCounts()
+-    return {
+-      waiting: counts.waiting,
+-      active: counts.active,
+-      completed: counts.completed,
+-      failed: counts.failed,
+-      delayed: counts.delayed,
+-    }
+-  } catch (error) {
+-    console.error('[Queue] Error getting queue status:', error)
+-    return null
+-  }
+-}
+-
+-// Check queue health
+-export async function checkQueueHealth() {
+-  try {
+-    await redisClient.connect()
+-    const ping = await redisClient.ping()
+-    await redisClient.disconnect()
+-
+-    return {
+-      healthy: ping === 'PONG',
+-      redis: ping === 'PONG' ? 'connected' : 'disconnected',
+-      error: null,
+-    }
+-  } catch (error) {
+-    console.error('[Queue] Health check error:', error)
+-    return {
+-      healthy: false,
+-      redis: 'error',
+-      error: error instanceof Error ? error.message : 'Unknown error',
+-    }
+-  }
+-}
+-
+-// Pause queue
+-export async function pauseQueue() {
+-  try {
+-    await scraperQueue.pause()
+-    console.log('[Queue] Queue paused')
+-  } catch (error) {
+-    console.error('[Queue] Error pausing queue:', error)
+-  }
+-}
+-
+-// Resume queue
+-export async function resumeQueue() {
+-  try {
+-    await scraperQueue.resume()
+-    console.log('[Queue] Queue resumed')
+-  } catch (error) {
+-    console.error('[Queue] Error resuming queue:', error)
+-  }
+-}
+-
+-export default scraperQueue
+diff --git a/src/lib/queue/bullConfig.ts.ts b/src/lib/queue/bullConfig.ts.ts
+deleted file mode 100644
+index 1b1bd5a..0000000
+--- a/src/lib/queue/bullConfig.ts.ts
++++ /dev/null
+@@ -1,104 +0,0 @@
+-import Queue from 'bull'
+-import Redis from 'redis'
+-
+-// Get Redis connection URL from environment or use default
+-const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379'
+-
+-// Create Redis clients
+-export const redisClient = Redis.createClient({
+-  url: redisUrl,
+-})
+-
+-// Event handlers for Redis client
+-redisClient.on('error', (err) => {
+-  console.error('Redis client error:', err)
+-})
+-
+-redisClient.on('connect', () => {
+-  console.log('[Queue] Redis client connected')
+-})
+-
+-redisClient.on('ready', () => {
+-  console.log('[Queue] Redis client ready')
+-})
+-
+-// Create Bull queue for scrapers
+-export const scraperQueue = new Queue('dublin-events-scraper', {
+-  redis: redisUrl,
+-})
+-
+-// Queue event handlers
+-scraperQueue.on('error', (error) => {
+-  console.error('[Scraper Queue] Error:', error)
+-})
+-
+-scraperQueue.on('waiting', (jobId) => {
+-  console.log(`[Scraper Queue] Job ${jobId} is waiting`)
+-})
+-
+-scraperQueue.on('active', (job) => {
+-  console.log(`[Scraper Queue] Job ${job.id} is active`)
+-})
+-
+-scraperQueue.on('completed', (job) => {
+-  console.log(`[Scraper Queue] Job ${job.id} completed successfully`)
+-})
+-
+-scraperQueue.on('failed', (job, err) => {
+-  console.error(`[Scraper Queue] Job ${job.id} failed:`, err.message)
+-})
+-
+-scraperQueue.on('stalled', (job) => {
+-  console.warn(`[Scraper Queue] Job ${job.id} has stalled`)
+-})
+-
+-// Clean up old jobs periodically
+-export async function cleanupOldJobs() {
+-  try {
+-    const maxAge = 7 * 24 * 60 * 60 * 1000 // 7 days in milliseconds
+-    await scraperQueue.clean(maxAge, 100)
+-    console.log('[Queue] Cleaned up old jobs')
+-  } catch (error) {
+-    console.error('[Queue] Error cleaning up old jobs:', error)
+-  }
+-}
+-
+-// Get queue status
+-export async function getQueueStatus() {
+-  try {
+-    const counts = await scraperQueue.getJobCounts()
+-    return {
+-      waiting: counts.waiting,
+-      active: counts.active,
+-      completed: counts.completed,
+-      failed: counts.failed,
+-      delayed: counts.delayed,
+-      paused: counts.paused,
+-    }
+-  } catch (error) {
+-    console.error('[Queue] Error getting queue status:', error)
+-    return null
+-  }
+-}
+-
+-// Pause queue
+-export async function pauseQueue() {
+-  try {
+-    await scraperQueue.pause()
+-    console.log('[Queue] Queue paused')
+-  } catch (error) {
+-    console.error('[Queue] Error pausing queue:', error)
+-  }
+-}
+-
+-// Resume queue
+-export async function resumeQueue() {
+-  try {
+-    await scraperQueue.resume()
+-    console.log('[Queue] Queue resumed')
+-  } catch (error) {
+-    console.error('[Queue] Error resuming queue:', error)
+-  }
+-}
+-
+-export default scraperQueue
+diff --git a/verify-push.ps1 b/verify-push.ps1
+deleted file mode 100644
+index 8ed6f67..0000000
+--- a/verify-push.ps1
++++ /dev/null
+@@ -1,11 +0,0 @@
+-cd "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
+-$output = @()
+-$output += "=== Git Status ==="
+-$output += git status
+-$output += ""
+-$output += "=== Latest Commit ==="
+-$output += git log -1 --oneline
+-$output += ""
+-$output += "=== Branch Info ==="
+-$output += git branch -vv
+-$output | Out-File -FilePath "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete\verify-output.txt" -Encoding UTF8
+-- 
+2.43.0
+

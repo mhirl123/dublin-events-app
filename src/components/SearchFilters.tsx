@@ -6,9 +6,8 @@ interface SearchParams {
   query: string
   dateFrom: string
   dateTo: string
-  genre: string
-  priceMin: number
-  priceMax: number
+  genres: string[]
+  priceRanges: Array<{ min: number; max: number }>
   venues: string[]
   sort: string
 }
@@ -115,7 +114,7 @@ export default function SearchFilters({
         )}
       </div>
 
-      {/* Genre - Playful Style */}
+      {/* Genre - Playful Style with Multi-select */}
       <div className="mb-6">
         <button
           onClick={() => toggleSection('genre')}
@@ -125,30 +124,62 @@ export default function SearchFilters({
           <span className="text-lg">{expandedSections.genre ? '−' : '+'}</span>
         </button>
         {expandedSections.genre && (
-          <div className="flex flex-wrap gap-2">
-            {GENRES.map((g) => (
+          <div>
+            {/* Select All / Clear All buttons */}
+            <div className="flex gap-2 mb-3">
               <button
-                key={g.name}
                 onClick={() => {
                   setSearchParams({
                     ...searchParams,
-                    genre: searchParams.genre === g.name ? '' : g.name,
+                    genres: GENRES.map(g => g.name),
                   })
                 }}
-                className={`px-3 py-2 rounded-full text-sm font-semibold transition-all ${
-                  searchParams.genre === g.name
-                    ? 'bg-gradient-to-r from-[#7c3aed] to-[#ec4899] text-white shadow-lg'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
+                className="px-3 py-1 text-xs font-semibold bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 transition-all"
               >
-                {g.emoji}
+                ✓ All
               </button>
-            ))}
+              <button
+                onClick={() => {
+                  setSearchParams({
+                    ...searchParams,
+                    genres: [],
+                  })
+                }}
+                className="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-all"
+              >
+                ✕ None
+              </button>
+            </div>
+
+            {/* Genre checkboxes */}
+            <div className="flex flex-wrap gap-2">
+              {GENRES.map((g) => (
+                <button
+                  key={g.name}
+                  onClick={() => {
+                    const isSelected = searchParams.genres.includes(g.name)
+                    setSearchParams({
+                      ...searchParams,
+                      genres: isSelected
+                        ? searchParams.genres.filter(genre => genre !== g.name)
+                        : [...searchParams.genres, g.name],
+                    })
+                  }}
+                  className={`px-3 py-2 rounded-full text-sm font-semibold transition-all ${
+                    searchParams.genres.includes(g.name)
+                      ? 'bg-gradient-to-r from-[#7c3aed] to-[#ec4899] text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {g.emoji}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </div>
 
-      {/* Price Range */}
+      {/* Price Range - Multi-select */}
       <div className="mb-6">
         <button
           onClick={() => toggleSection('price')}
@@ -158,33 +189,66 @@ export default function SearchFilters({
           <span className="text-lg">{expandedSections.price ? '−' : '+'}</span>
         </button>
         {expandedSections.price && (
-          <div className="space-y-2">
-            {PRICE_RANGES.map((range) => (
-              <label
-                key={range.label}
-                className="flex items-center text-sm cursor-pointer hover:text-[#7c3aed] transition-colors"
+          <div>
+            {/* Select All / Clear All buttons */}
+            <div className="flex gap-2 mb-3">
+              <button
+                onClick={() => {
+                  setSearchParams({
+                    ...searchParams,
+                    priceRanges: PRICE_RANGES,
+                  })
+                }}
+                className="px-3 py-1 text-xs font-semibold bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 transition-all"
               >
-                <input
-                  type="radio"
-                  name="price"
-                  checked={
-                    searchParams.priceMin === range.min &&
-                    searchParams.priceMax === range.max
-                  }
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setSearchParams({
-                        ...searchParams,
-                        priceMin: range.min,
-                        priceMax: range.max,
-                      })
-                    }
-                  }}
-                  className="mr-3"
-                />
-                {range.label}
-              </label>
-            ))}
+                ✓ All
+              </button>
+              <button
+                onClick={() => {
+                  setSearchParams({
+                    ...searchParams,
+                    priceRanges: [],
+                  })
+                }}
+                className="px-3 py-1 text-xs font-semibold bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition-all"
+              >
+                ✕ None
+              </button>
+            </div>
+
+            {/* Price range checkboxes */}
+            <div className="space-y-2">
+              {PRICE_RANGES.map((range) => (
+                <label
+                  key={range.label}
+                  className="flex items-center text-sm cursor-pointer hover:text-[#7c3aed] transition-colors"
+                >
+                  <input
+                    type="checkbox"
+                    checked={searchParams.priceRanges.some(
+                      (pr) => pr.min === range.min && pr.max === range.max
+                    )}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSearchParams({
+                          ...searchParams,
+                          priceRanges: [...searchParams.priceRanges, range],
+                        })
+                      } else {
+                        setSearchParams({
+                          ...searchParams,
+                          priceRanges: searchParams.priceRanges.filter(
+                            (pr) => !(pr.min === range.min && pr.max === range.max)
+                          ),
+                        })
+                      }
+                    }}
+                    className="mr-3 w-4 h-4 accent-purple-600"
+                  />
+                  {range.label}
+                </label>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -227,9 +291,8 @@ export default function SearchFilters({
             query: '',
             dateFrom: '',
             dateTo: '',
-            genre: '',
-            priceMin: 0,
-            priceMax: 1000,
+            genres: [],
+            priceRanges: [],
             venues: [],
             sort: 'date-asc',
           })

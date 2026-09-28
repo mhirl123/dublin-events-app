@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
     const dateTo = searchParams.get('dateTo')
     const genreParam = searchParams.get('genre')
     const genresParam = searchParams.get('genres')
+    const priceRangesParam = searchParams.get('priceRanges')
     const priceMinStr = searchParams.get('priceMin')
     const priceMaxStr = searchParams.get('priceMax')
     const venuesParam = searchParams.get('venues')
@@ -26,6 +27,16 @@ export async function GET(request: NextRequest) {
     // Parse numeric values
     const priceMin = priceMinStr ? parseFloat(priceMinStr) : undefined
     const priceMax = priceMaxStr ? parseFloat(priceMaxStr) : undefined
+
+    // Parse price ranges if provided
+    let priceRanges: Array<{ min: number; max: number }> = []
+    if (priceRangesParam) {
+      try {
+        priceRanges = JSON.parse(priceRangesParam)
+      } catch (e) {
+        console.error('Failed to parse priceRanges:', e)
+      }
+    }
 
     // Build where clause with proper AND/OR logic
     const where: any = {
@@ -68,11 +79,34 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Price range filtering
-    if (priceMin !== undefined || priceMax !== undefined) {
+    // Price range filtering - handle both old format and new format
+    if (priceRanges.length > 0) {
+      // New format: multiple price ranges
+      const priceRangeConditions = priceRanges.map((range) => {
+        const conditions: any = []
+
+        if (range.min !== undefined) {
+          conditions.push({
+            ticketPriceMin: { gte: range.min },
+          })
+        }
+
+        if (range.max !== undefined) {
+          conditions.push({
+            ticketPriceMax: { lte: range.max },
+          })
+        }
+
+        return conditions.length > 0 ? { AND: conditions } : {}
+      })
+
+      if (priceRangeConditions.length > 0) {
+        where.OR = priceRangeConditions
+      }
+    } else if (priceMin !== undefined || priceMax !== undefined) {
+      // Old format: single price range (for backwards compatibility)
       const priceConditions: any[] = []
 
-      // Handle minimum price
       if (priceMin !== undefined) {
         priceConditions.push({
           OR: [
@@ -82,7 +116,6 @@ export async function GET(request: NextRequest) {
         })
       }
 
-      // Handle maximum price
       if (priceMax !== undefined) {
         priceConditions.push({
           OR: [
@@ -173,7 +206,7 @@ export async function GET(request: NextRequest) {
         dateFrom: dateFrom || null,
         dateTo: dateTo || null,
         genres: genresParam ? genresParam.split(',') : (genreParam ? [genreParam] : null),
-        priceRange: priceMin || priceMax ? { min: priceMin, max: priceMax } : null,
+        priceRanges: priceRanges.length > 0 ? priceRanges : (priceMin || priceMax ? [{ min: priceMin, max: priceMax }] : null),
         venues: venuesParam ? venuesParam.split(',') : null,
         sort: sortParam,
       },

@@ -8,9 +8,8 @@ interface SearchParams {
   query: string
   dateFrom: string
   dateTo: string
-  genre: string
-  priceMin: number
-  priceMax: number
+  genres: string[]
+  priceRanges: Array<{ min: number; max: number }>
   venues: string[]
   sort: string
 }
@@ -20,9 +19,8 @@ export default function Home() {
     query: '',
     dateFrom: '',
     dateTo: '',
-    genre: '',
-    priceMin: 0,
-    priceMax: 1000,
+    genres: [],
+    priceRanges: [],
     venues: [],
     sort: 'date-asc',
   })
@@ -41,9 +39,14 @@ export default function Home() {
       if (searchParams.query) params.append('search', searchParams.query)
       if (searchParams.dateFrom) params.append('dateFrom', searchParams.dateFrom)
       if (searchParams.dateTo) params.append('dateTo', searchParams.dateTo)
-      if (searchParams.genre) params.append('genre', searchParams.genre)
-      if (searchParams.priceMin) params.append('priceMin', searchParams.priceMin.toString())
-      if (searchParams.priceMax) params.append('priceMax', searchParams.priceMax.toString())
+      if (searchParams.genres.length > 0)
+        params.append('genres', searchParams.genres.join(','))
+
+      // Handle multiple price ranges
+      if (searchParams.priceRanges.length > 0) {
+        params.append('priceRanges', JSON.stringify(searchParams.priceRanges))
+      }
+
       if (searchParams.venues.length > 0)
         params.append('venues', searchParams.venues.join(','))
       if (searchParams.sort) params.append('sort', searchParams.sort)

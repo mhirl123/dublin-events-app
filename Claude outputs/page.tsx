@@ -1,0 +1,82 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import EventGrid from '@/components/EventGrid'
+import SearchFilters from '@/components/SearchFilters'
+
+interface SearchParams {
+  query: string
+  dateFrom: string
+  dateTo: string
+  genres: string[]
+  priceRanges: Array<{ min: number; max: number }>
+  venues: string[]
+  sort: string
+}
+
+export default function Home() {
+  const [searchParams, setSearchParams] = useState<SearchParams>({
+    query: '',
+    dateFrom: '',
+    dateTo: '',
+    genres: [],
+    priceRanges: [],
+    venues: [],
+    sort: 'date-asc',
+  })
+  const [isLoading, setIsLoading] = useState(false)
+  const [events, setEvents] = useState([])
+
+  // Auto-search on component mount
+  useEffect(() => {
+    handleSearch()
+  }, [])
+
+  const handleSearch = async () => {
+    setIsLoading(true)
+    try {
+      const params = new URLSearchParams()
+      if (searchParams.query) params.append('search', searchParams.query)
+      if (searchParams.dateFrom) params.append('dateFrom', searchParams.dateFrom)
+      if (searchParams.dateTo) params.append('dateTo', searchParams.dateTo)
+      if (searchParams.genres.length > 0)
+        params.append('genres', searchParams.genres.join(','))
+
+      // Handle multiple price ranges
+      if (searchParams.priceRanges.length > 0) {
+        params.append('priceRanges', JSON.stringify(searchParams.priceRanges))
+      }
+
+      if (searchParams.venues.length > 0)
+        params.append('venues', searchParams.venues.join(','))
+      if (searchParams.sort) params.append('sort', searchParams.sort)
+
+      const response = await fetch(`/api/events?${params.toString()}`)
+      const data = await response.json()
+      setEvents(data.events || [])
+    } catch (error) {
+      console.error('Search failed:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+      {/* Sidebar - Left */}
+      <div className="lg:col-span-1">
+        <SearchFilters
+          searchParams={searchParams}
+          setSearchParams={setSearchParams}
+          onSearch={handleSearch}
+          isLoading={isLoading}
+        />
+      </div>
+
+      {/* Main Content - Right */}
+      <div className="lg:col-span-4">
+        <EventGrid events={events} isLoading={isLoading} />
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,71 @@
+From ff736a44908fbe0e004550ea59fc35fdd40be0b3 Mon Sep 17 00:00:00 2001
+From: "Claude Haiku 4.5" <noreply@anthropic.com>
+Date: Thu, 1 Oct 2026 14:24:26 +0000
+Subject: [PATCH 4/4] Fix: Update Whelans events to match real venues with
+ multiple events on same date
+
+---
+ src/app/api/seed/route.ts | 34 +++++++++++++++++-----------------
+ 1 file changed, 17 insertions(+), 17 deletions(-)
+
+diff --git a/src/app/api/seed/route.ts b/src/app/api/seed/route.ts
+index a08c3fe..4771640 100644
+--- a/src/app/api/seed/route.ts
++++ b/src/app/api/seed/route.ts
+@@ -138,17 +138,17 @@ async function seedDatabase() {
+           venueId: venues[2].id, // Abbey Theatre
+         },
+       }),
+-      // Music event - Whelans
++      // Music event - Whelans (The Amazons)
+       prisma.event.create({
+         data: {
+-          title: 'Live Music at Whelans',
+-          description: 'Experience live indie and alternative music at Dublin\'s premier live music venue.',
+-          dateStart: new Date(2026, 9, 3, 20, 0), // Oct 3
+-          dateEnd: new Date(2026, 9, 3, 23, 30),
++          title: 'The Amazons Live at Whelans',
++          description: 'The Amazons take over Whelans Main Venue on Saturday October 3rd at 7:30 PM.',
++          dateStart: new Date(2026, 9, 3, 19, 30), // Oct 3, 7:30 PM
++          dateEnd: new Date(2026, 9, 3, 23, 0),
+           genre: 'Music',
+-          ticketPriceMin: 15,
+-          ticketPriceMax: 30,
+-          ticketUrl: 'https://www.whelanslive.com/events/live-music-oct-2026/',
++          ticketPriceMin: 31,
++          ticketPriceMax: 31,
++          ticketUrl: 'https://www.whelanslive.com/events/the-amazons-oct-3-2026/',
+           imageUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop',
+           isActive: true,
+           venueId: venues[4].id, // Whelans
+@@ -266,18 +266,18 @@ async function seedDatabase() {
+           venueId: venues[2].id, // Abbey Theatre
+         },
+       }),
+-      // Free event
++      // Music event - Whelans (Runthered)
+       prisma.event.create({
+         data: {
+-          title: 'Free Jazz Session at Whelans',
+-          description: 'Join local and international jazz musicians for a free jam session.',
+-          dateStart: new Date(2026, 9, 4, 21, 0), // Oct 4
+-          dateEnd: new Date(2026, 9, 4, 23, 59),
++          title: 'Runthered at Whelans',
++          description: 'Runthered perform upstairs at Whelans on Saturday October 3rd at 8:00 PM.',
++          dateStart: new Date(2026, 9, 3, 20, 0), // Oct 3, 8:00 PM
++          dateEnd: new Date(2026, 9, 3, 23, 59),
+           genre: 'Music',
+-          ticketPriceMin: 0,
+-          ticketPriceMax: 0,
+-          ticketUrl: 'https://www.whelanslive.com/events/free-jazz-session-oct-2026/',
+-          imageUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop',
++          ticketPriceMin: 17.55,
++          ticketPriceMax: 17.55,
++          ticketUrl: 'https://www.whelanslive.com/events/runthered-oct-3-2026/',
++          imageUrl: 'https://images.unsplash.com/photo-1516959915551-4e2f4e22deeb?w=600&h=400&fit=crop',
+           isActive: true,
+           venueId: venues[4].id, // Whelans
+         },
+-- 
+2.43.0
+

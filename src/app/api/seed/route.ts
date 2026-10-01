@@ -132,24 +132,24 @@ async function seedDatabase() {
           genre: 'Theater',
           ticketPriceMin: 15,
           ticketPriceMax: 65,
-          ticketUrl: 'https://www.ticketmaster.ie/discover/dublin?categoryId=KZFzniwnSyZfZ7v7nJ',
-          imageUrl: 'https://media.ticketmaster.ie/en-IE/content/dublin-theatre-festival-2026.jpg',
+          ticketUrl: 'https://www.abbeytheatre.ie/whats-on/dublin-theatre-festival-2026/',
+          imageUrl: 'https://images.unsplash.com/photo-1598488035139-afb50080263f?w=600&h=400&fit=crop',
           isActive: true,
           venueId: venues[2].id, // Abbey Theatre
         },
       }),
-      // Music event - Whelans
+      // Music event - Whelans (The Amazons)
       prisma.event.create({
         data: {
-          title: 'Live Music at Whelans',
-          description: 'Experience live indie and alternative music at Dublin\'s premier live music venue.',
-          dateStart: new Date(2026, 9, 3, 20, 0), // Oct 3
-          dateEnd: new Date(2026, 9, 3, 23, 30),
+          title: 'The Amazons Live at Whelans',
+          description: 'The Amazons take over Whelans Main Venue on Saturday October 3rd at 7:30 PM.',
+          dateStart: new Date(2026, 9, 3, 19, 30), // Oct 3, 7:30 PM
+          dateEnd: new Date(2026, 9, 3, 23, 0),
           genre: 'Music',
-          ticketPriceMin: 15,
-          ticketPriceMax: 30,
-          ticketUrl: 'https://www.whelanslive.com/events/',
-          imageUrl: 'https://www.whelanslive.com/images/live-music-dublin.jpg',
+          ticketPriceMin: 31,
+          ticketPriceMax: 31,
+          ticketUrl: 'https://www.whelanslive.com/events/the-amazons-oct-3-2026/',
+          imageUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&h=400&fit=crop',
           isActive: true,
           venueId: venues[4].id, // Whelans
         },
@@ -164,8 +164,8 @@ async function seedDatabase() {
           genre: 'Comedy',
           ticketPriceMin: 20,
           ticketPriceMax: 35,
-          ticketUrl: 'https://www.vicarstreet.com/thelist-dashboard/tag/13.html',
-          imageUrl: 'https://www.vicarstreet.com/images/comedy-night.jpg',
+          ticketUrl: 'https://www.vicarstreet.com/events/stand-up-comedy-sept-2026/',
+          imageUrl: 'https://images.unsplash.com/photo-1577720643272-265a42ed9b5e?w=600&h=400&fit=crop',
           isActive: true,
           venueId: venues[1].id, // Vicar Street
         },
@@ -180,8 +180,8 @@ async function seedDatabase() {
           genre: 'Theater',
           ticketPriceMin: 35,
           ticketPriceMax: 85,
-          ticketUrl: 'https://www.ticketmaster.ie/gaiety-theatre-tickets-dublin/venue/198240',
-          imageUrl: 'https://media.ticketmaster.ie/gaiety-theatre-production-2026.jpg',
+          ticketUrl: 'https://www.gaietytheatre.ie/whats-on/west-end-production-oct-2026/',
+          imageUrl: 'https://images.unsplash.com/photo-1503854657149-a92b042ec90d?w=600&h=400&fit=crop',
           isActive: true,
           venueId: venues[3].id, // Gaiety Theatre
         },
@@ -196,8 +196,8 @@ async function seedDatabase() {
           genre: 'Music',
           ticketPriceMin: 45,
           ticketPriceMax: 120,
-          ticketUrl: 'https://www.ticketmaster.ie/3arena-tickets-dublin/venue/197033',
-          imageUrl: 'https://media.ticketmaster.ie/3arena-concert-series-2026.jpg',
+          ticketUrl: 'https://www.3arena.ie/events/international-concert-series-oct-2026/',
+          imageUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&h=400&fit=crop',
           isActive: true,
           venueId: venues[0].id, // 3 Arena
         },
@@ -212,8 +212,8 @@ async function seedDatabase() {
           genre: 'Theater',
           ticketPriceMin: 20,
           ticketPriceMax: 50,
-          ticketUrl: 'https://www.abbeytheatre.ie/whats-on/',
-          imageUrl: 'https://www.abbeytheatre.ie/images/season-production-2026.jpg',
+          ticketUrl: 'https://www.abbeytheatre.ie/whats-on/season-production-oct-2026/',
+          imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop',
           isActive: true,
           venueId: venues[2].id, // Abbey Theatre
         },
@@ -228,8 +228,8 @@ async function seedDatabase() {
           genre: 'Comedy',
           ticketPriceMin: 15,
           ticketPriceMax: 25,
-          ticketUrl: 'https://www.ticketmaster.ie/discover/dublin?categoryId=KZFzniwnSyZfZ7v7na',
-          imageUrl: 'https://www.craicdencomedyclub.com/images/comedy-nights-2026.jpg',
+          ticketUrl: 'https://www.craicdencomedyclub.com/events/comedy-nights-oct-2026/',
+          imageUrl: 'https://images.unsplash.com/photo-1532635255-4b35fc3a1ea1?w=600&h=400&fit=crop',
           isActive: true,
           venueId: venues[5].id, // Craic Den Comedy Club
         },
@@ -244,8 +244,8 @@ async function seedDatabase() {
           genre: 'Festival',
           ticketPriceMin: 0,
           ticketPriceMax: 60,
-          ticketUrl: 'https://www.ticketmaster.ie/discover/dublin',
-          imageUrl: 'https://media.ticketmaster.ie/dublin-festival-2026.jpg',
+          ticketUrl: 'https://www.3arena.ie/events/dublin-music-arts-festival-2026/',
+          imageUrl: 'https://images.unsplash.com/photo-1501612780353-557265bc2be0?w=600&h=400&fit=crop',
           isActive: true,
           venueId: venues[0].id, // 3 Arena
         },
@@ -260,38 +260,49 @@ async function seedDatabase() {
           genre: 'Workshop',
           ticketPriceMin: 25,
           ticketPriceMax: 50,
-          ticketUrl: 'https://www.abbeytheatre.ie/whats-on/',
-          imageUrl: 'https://www.abbeytheatre.ie/images/masterclass-2026.jpg',
+          ticketUrl: 'https://www.abbeytheatre.ie/whats-on/theatre-masterclass-sept-2026/',
+          imageUrl: 'https://images.unsplash.com/photo-1516959915551-4e2f4e22deeb?w=600&h=400&fit=crop',
           isActive: true,
           venueId: venues[2].id, // Abbey Theatre
         },
       }),
-      // Free event
+      // Music event - Whelans (Runthered)
       prisma.event.create({
         data: {
-          title: 'Free Jazz Session at Whelans',
-          description: 'Join local and international jazz musicians for a free jam session.',
-          dateStart: new Date(2026, 9, 4, 21, 0), // Oct 4
-          dateEnd: new Date(2026, 9, 4, 23, 59),
+          title: 'Runthered at Whelans',
+          description: 'Runthered perform upstairs at Whelans on Saturday October 3rd at 8:00 PM.',
+          dateStart: new Date(2026, 9, 3, 20, 0), // Oct 3, 8:00 PM
+          dateEnd: new Date(2026, 9, 3, 23, 59),
           genre: 'Music',
-          ticketPriceMin: 0,
-          ticketPriceMax: 0,
-          ticketUrl: 'https://www.whelanslive.com/events/',
-          imageUrl: 'https://www.whelanslive.com/images/jazz-session-free.jpg',
+          ticketPriceMin: 17.55,
+          ticketPriceMax: 17.55,
+          ticketUrl: 'https://www.whelanslive.com/events/runthered-oct-3-2026/',
+          imageUrl: 'https://images.unsplash.com/photo-1516959915551-4e2f4e22deeb?w=600&h=400&fit=crop',
           isActive: true,
           venueId: venues[4].id, // Whelans
         },
       }),
     ])
 
-    // Link events to sources
+    // Link events to sources based on venue-source mapping
+    const venueToSourceMap: { [key: string]: number } = {
+      [venues[0].id]: 0, // 3 Arena -> 3 Arena source
+      [venues[1].id]: 1, // Vicar Street -> Vicar Street source
+      [venues[2].id]: 2, // Abbey Theatre -> Abbey Theatre source
+      [venues[3].id]: 3, // Gaiety Theatre -> Ticketmaster source
+      [venues[4].id]: 1, // Whelans -> Vicar Street source (as fallback)
+      [venues[5].id]: 3, // Craic Den -> Ticketmaster source (as fallback)
+    }
+
     for (let i = 0; i < events.length; i++) {
-      const sourceId = sources[i % sources.length].id
+      // Get the correct source based on the event's venue
+      const sourceIndex = venueToSourceMap[events[i].venueId] || (i % sources.length)
+      const sourceId = sources[sourceIndex].id
       await prisma.eventSource.create({
         data: {
           eventId: events[i].id,
           sourceId: sourceId,
-          sourceUrl: sources[i % sources.length].url,
+          sourceUrl: sources[sourceIndex].url,
           sourceEventId: `dublin-${i}`,
         },
       })

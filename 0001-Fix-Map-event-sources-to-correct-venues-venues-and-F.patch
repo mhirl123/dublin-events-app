@@ -1,0 +1,46 @@
+From 17fd266215ea9de883486c5ca6cd2c64662db41e Mon Sep 17 00:00:00 2001
+From: "Claude Haiku 4.5" <noreply@anthropic.com>
+Date: Thu, 1 Oct 2026 14:19:32 +0000
+Subject: [PATCH 1/4] Fix: Map event sources to correct venues - venues and
+ 'Found On' should match
+
+---
+ src/app/api/seed/route.ts | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/src/app/api/seed/route.ts b/src/app/api/seed/route.ts
+index e9dfd1d..11f0cf0 100644
+--- a/src/app/api/seed/route.ts
++++ b/src/app/api/seed/route.ts
+@@ -284,14 +284,25 @@ async function seedDatabase() {
+       }),
+     ])
+ 
+-    // Link events to sources
++    // Link events to sources based on venue-source mapping
++    const venueToSourceMap: { [key: string]: number } = {
++      [venues[0].id]: 0, // 3 Arena -> 3 Arena source
++      [venues[1].id]: 1, // Vicar Street -> Vicar Street source
++      [venues[2].id]: 2, // Abbey Theatre -> Abbey Theatre source
++      [venues[3].id]: 3, // Gaiety Theatre -> Ticketmaster source
++      [venues[4].id]: 1, // Whelans -> Vicar Street source (as fallback)
++      [venues[5].id]: 3, // Craic Den -> Ticketmaster source (as fallback)
++    }
++
+     for (let i = 0; i < events.length; i++) {
+-      const sourceId = sources[i % sources.length].id
++      // Get the correct source based on the event's venue
++      const sourceIndex = venueToSourceMap[events[i].venueId] || (i % sources.length)
++      const sourceId = sources[sourceIndex].id
+       await prisma.eventSource.create({
+         data: {
+           eventId: events[i].id,
+           sourceId: sourceId,
+-          sourceUrl: sources[i % sources.length].url,
++          sourceUrl: sources[sourceIndex].url,
+           sourceEventId: `dublin-${i}`,
+         },
+       })
+-- 
+2.43.0
+

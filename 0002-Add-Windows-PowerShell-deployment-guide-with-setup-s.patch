@@ -1,0 +1,418 @@
+From 8cd0ab7bf40780f167a2492346abc8505190fc2e Mon Sep 17 00:00:00 2001
+From: "Claude Haiku 4.5" <noreply@anthropic.com>
+Date: Thu, 1 Oct 2026 15:23:29 +0000
+Subject: [PATCH 2/2] Add Windows/PowerShell deployment guide with setup script
+
+- Provide PowerShell-friendly commands for environment setup
+- Include Invoke-RestMethod examples for testing scraper
+- Add detailed EasyCron configuration instructions
+- Include GitHub Actions workflow for automated scheduling
+- Add Windows Task Scheduler alternative
+- Include setup.ps1 script for quick configuration
+
+Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>
+Claude-Session: https://claude.ai/code/session_01Tz3jEsLNEVcPGqcnsrSdnF
+---
+ DEPLOYMENT_WINDOWS.md | 390 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 390 insertions(+)
+ create mode 100644 DEPLOYMENT_WINDOWS.md
+
+diff --git a/DEPLOYMENT_WINDOWS.md b/DEPLOYMENT_WINDOWS.md
+new file mode 100644
+index 0000000..99d3ebb
+--- /dev/null
++++ b/DEPLOYMENT_WINDOWS.md
+@@ -0,0 +1,390 @@
++# Deployment Guide for Windows (PowerShell)
++
++## Step 1: Deploy to Railway
++
++```powershell
++# Push code from Windows to GitHub
++git push origin main
++```
++
++This triggers Railway's webhook to auto-deploy (should complete in 1-2 minutes).
++
++---
++
++## Step 2: Set Environment Variable on Railway
++
++1. Go to **Railway Dashboard**: https://railway.app
++2. Select your **dublin-events-app** project
++3. Click **Variables** tab
++4. Add new variable:
++   - **Key**: `SCRAPER_SECRET_KEY`
++   - **Value**: `your-secure-random-string-here` (e.g., `dublin-scraper-abc123xyz789`)
++5. Click **Deploy** to apply changes
++
++*Alternative: Use Railway CLI*
++
++```powershell
++# Login to Railway (if not already logged in)
++railway login
++
++# Navigate to project directory
++cd "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
++
++# Set environment variable
++railway variables set SCRAPER_SECRET_KEY="your-secure-random-string"
++
++# Redeploy to apply changes
++railway up
++```
++
++---
++
++## Step 3: Test Scraper (Manual Trigger)
++
++### Option A: Using Invoke-WebRequest (PowerShell)
++
++```powershell
++# Test local scraper (if running locally)
++$response = Invoke-WebRequest `
++  -Uri "http://localhost:3000/api/scrape/midnight?key=dev-scraper-key" `
++  -Method Post `
++  -ContentType "application/json"
++
++$response.Content | ConvertFrom-Json | ConvertTo-Json
++
++# Response should show: 6 venues, event counts, success status
++```
++
++### Option B: Using Curl (if installed)
++
++```powershell
++# Test live scraper on Railway
++curl -X POST "https://yourapp.railway.app/api/scrape/midnight?key=your-secret-key"
++
++# Response example:
++# {
++#   "success": true,
++#   "message": "✅ All 6 venues scraped successfully! Found 47 events.",
++#   "timestamp": "2026-10-01T00:15:30.000Z",
++#   "summary": {
++#     "totalVenues": 6,
++#     "successfulVenues": 6,
++#     "failedVenues": 0,
++#     "totalEventsScraped": 47,
++#     "durationMs": 8250
++#   }
++# }
++```
++
++### Option C: Using Invoke-RestMethod (PowerShell - Recommended)
++
++```powershell
++# Replace YOUR_SECRET_KEY with actual value
++$secretKey = "your-secret-key"
++$appUrl = "https://yourapp.railway.app"
++
++# Build URL
++$scraperUrl = "$appUrl/api/scrape/midnight?key=$secretKey"
++
++# Make request
++try {
++    $response = Invoke-RestMethod `
++        -Uri $scraperUrl `
++        -Method Post `
++        -ContentType "application/json" `
++        -TimeoutSec 60
++
++    # Display results
++    Write-Host "✅ Scraper Response:" -ForegroundColor Green
++    $response | ConvertTo-Json -Depth 5 | Write-Host
++
++    # Extract summary
++    Write-Host "`n📊 Summary:" -ForegroundColor Cyan
++    Write-Host "Total Venues: $($response.summary.totalVenues)"
++    Write-Host "Successful: $($response.summary.successfulVenues)"
++    Write-Host "Failed: $($response.summary.failedVenues)"
++    Write-Host "Events Found: $($response.summary.totalEventsScraped)"
++    Write-Host "Duration: $($response.summary.durationMs)ms"
++
++} catch {
++    Write-Host "❌ Error: $($_.Exception.Message)" -ForegroundColor Red
++    Write-Host "Response: $($_.ErrorDetails.Message)" -ForegroundColor Red
++}
++```
++
++---
++
++## Step 4: Set Up Automated Midnight Runs
++
++### Option A: EasyCron (Easiest - Recommended)
++
++1. Visit: https://www.easycron.com/
++2. Sign up (free account)
++3. Click **Add Cron Job**
++4. Fill in details:
++   ```
++   Cron Expression: 0 0 * * *
++   Timezone:       UTC (or choose Dublin if available)
++   HTTP Method:    GET or POST
++   URL:            https://yourapp.railway.app/api/scrape/midnight?key=YOUR_SECRET_KEY
++   ```
++5. Click **Save**
++
++EasyCron will now call your scraper endpoint every night at midnight.
++
++**To verify:**
++- EasyCron shows "Execution History" with timestamps
++- Check Railway logs for scraper execution
++- Check database for new events appearing each morning
++
++### Option B: GitHub Actions (Secure - Recommended for teams)
++
++1. Create file: `.github/workflows/midnight-scrape.yml`
++
++```yaml
++name: Midnight Dublin Events Scraper
++
++on:
++  schedule:
++    # Runs at midnight UTC every day
++    - cron: '0 0 * * *'
++  
++  # Allow manual trigger from GitHub Actions tab
++  workflow_dispatch:
++
++jobs:
++  scrape:
++    runs-on: ubuntu-latest
++    
++    steps:
++      - name: Trigger Dublin Events Scraper
++        run: |
++          curl -X POST "https://yourapp.railway.app/api/scrape/midnight?key=${{ secrets.SCRAPER_SECRET_KEY }}"
++        env:
++          SCRAPER_SECRET_KEY: ${{ secrets.SCRAPER_SECRET_KEY }}
++```
++
++2. Add GitHub Actions secret:
++   - Go to **Repository Settings** → **Secrets and variables** → **Actions**
++   - Click **New repository secret**
++   - Name: `SCRAPER_SECRET_KEY`
++   - Value: Your actual secret key
++
++3. Commit and push:
++```powershell
++git add .github/workflows/midnight-scrape.yml
++git commit -m "Add automated midnight scraper workflow"
++git push origin main
++```
++
++4. Verify in GitHub:
++   - Go to **Actions** tab
++   - Should see "Midnight Dublin Events Scraper" workflow
++   - It will run automatically at midnight UTC daily
++
++### Option C: Railway Scheduled Jobs (if available)
++
++Contact Railway support to see if your plan includes scheduled jobs. If so:
++1. Provide them your scraper endpoint URL
++2. They configure it to run at midnight
++3. No additional setup needed
++
++---
++
++## Step 5: Verify Everything Works
++
++### Check Database for New Events
++
++1. SSH into Railway database, or
++2. Use Railway dashboard to view logs:
++   - Go to your project
++   - Click **Logs** tab
++   - Filter for "Scraper" or "Started Dublin Events Scraper"
++
++### Monitor First Run
++
++**Local Testing (while developing):**
++```powershell
++# Start local development server
++npm run dev
++
++# In another PowerShell window:
++$response = Invoke-RestMethod `
++    -Uri "http://localhost:3000/api/scrape/midnight?key=dev-scraper-key" `
++    -Method Post
++
++$response | ConvertTo-Json
++```
++
++**Production Monitoring:**
++```powershell
++# Check Railway logs for scraper execution
++railway logs
++
++# Or via web dashboard:
++# 1. Go to railway.app
++# 2. Select project
++# 3. Click "Logs" tab
++# 4. Filter by "Scraper" or "Started Dublin"
++```
++
++---
++
++## Step 6: Switch to New UI (When Ready)
++
++Once images are displaying correctly:
++
++```powershell
++# In your project directory:
++cd "C:\Users\Mo Harvey\CLAUDE PROJECTS\dublin-events-app-complete"
++
++# Copy redesigned page to production
++Copy-Item src/app/page-redesign.tsx src/app/page.tsx -Force
++
++# Commit and push
++git add src/app/page.tsx
++git commit -m "Activate modern UI redesign"
++git push origin main
++```
++
++---
++
++## PowerShell Cheat Sheet
++
++### Common Commands
++
++```powershell
++# Set environment variable (temporary - for current session only)
++$env:SCRAPER_SECRET_KEY = "your-secret-key"
++
++# Use it in requests
++$key = $env:SCRAPER_SECRET_KEY
++$url = "https://yourapp.railway.app/api/scrape/midnight?key=$key"
++
++# Make HTTP POST request
++Invoke-RestMethod -Uri $url -Method Post
++
++# Make HTTP GET request
++Invoke-RestMethod -Uri $url -Method Get
++
++# Parse JSON response
++$response = Invoke-RestMethod -Uri $url -Method Post
++$response.summary.totalEventsScraped
++
++# Format JSON output nicely
++$response | ConvertTo-Json -Depth 10 | Write-Host
++
++# Check if command exists
++Get-Command curl
++Get-Command railway
++Get-Command git
++```
++
++### Quick Setup Script
++
++Save this as `setup-scraper.ps1`:
++
++```powershell
++# Setup Midnight Scraper for Dublin Events App
++
++Write-Host "🚀 Dublin Events - Scraper Setup" -ForegroundColor Cyan
++Write-Host "================================" -ForegroundColor Cyan
++
++# 1. Get secret key from user
++$secretKey = Read-Host "Enter SCRAPER_SECRET_KEY (or press Enter for default)"
++if (-not $secretKey) {
++    $secretKey = "dev-scraper-key"
++}
++
++# 2. Test local scraper
++Write-Host "`nTesting local scraper..." -ForegroundColor Yellow
++try {
++    $localUrl = "http://localhost:3000/api/scrape/midnight?key=$secretKey"
++    $localResponse = Invoke-RestMethod -Uri $localUrl -Method Post -TimeoutSec 30
++    
++    Write-Host "✅ Local scraper working!" -ForegroundColor Green
++    Write-Host "Events found: $($localResponse.summary.totalEventsScraped)" -ForegroundColor Green
++    
++} catch {
++    Write-Host "⚠️ Local server not running. Make sure 'npm run dev' is active." -ForegroundColor Yellow
++}
++
++# 3. Instructions for Railway
++Write-Host "`n📝 Next Steps:" -ForegroundColor Cyan
++Write-Host "1. Go to railway.app and set SCRAPER_SECRET_KEY=$secretKey"
++Write-Host "2. Go to easycron.com and create cron job:"
++Write-Host "   URL: https://yourapp.railway.app/api/scrape/midnight?key=$secretKey"
++Write-Host "   Cron: 0 0 * * *"
++Write-Host "3. Or use GitHub Actions for scheduling"
++Write-Host "4. Deploy: git push origin main"
++
++Write-Host "`n✨ Setup complete!" -ForegroundColor Green
++```
++
++Run it:
++```powershell
++.\setup-scraper.ps1
++```
++
++---
++
++## Troubleshooting
++
++### Scraper returns 401 Unauthorized
++**Problem:** Wrong SCRAPER_SECRET_KEY  
++**Solution:** Double-check the key matches in Railway variables
++
++### Scraper returns 0 events
++**Problem:** Venue website selectors may have changed  
++**Solution:** See SCRAPER_SETUP.md → Troubleshooting → "Scraper Returns 0 Events"
++
++### Images not displaying
++**Problem:** Image URLs not venue-domain hosted  
++**Solution:** Verify URLs in database: `SELECT image_url FROM "Event" LIMIT 5;`
++
++### Cron job not running at midnight
++**Problem:** Timezone mismatch or scheduler not set up  
++**Solution:** Check EasyCron execution history or GitHub Actions logs
++
++---
++
++## Windows-Specific Tips
++
++### Install curl (if not already installed)
++```powershell
++# Windows 10/11 usually has curl built-in
++curl --version
++
++# If not, install via Chocolatey:
++choco install curl
++```
++
++### Install Railway CLI
++```powershell
++# Via npm (requires Node.js)
++npm install -g @railway/cli
++
++# Verify installation
++railway --version
++
++# Login
++railway login
++```
++
++### Scheduled Task (Alternative to EasyCron)
++
++Instead of EasyCron, you can use Windows Task Scheduler:
++
++1. Open **Task Scheduler**
++2. Create Basic Task:
++   - Name: "Dublin Events Scraper"
++   - Trigger: Daily at 12:00 AM (midnight)
++   - Action: Start a program
++     - Program: `powershell.exe`
++     - Arguments: `-Command "Invoke-RestMethod -Uri 'https://yourapp.railway.app/api/scrape/midnight?key=YOUR_SECRET_KEY' -Method Post"`
++
++---
++
++**Last Updated:** October 1, 2026  
++**Platform:** Windows PowerShell / PowerShell Core  
++**Status:** Ready for Production
+-- 
+2.43.0
+

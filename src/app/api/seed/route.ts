@@ -296,7 +296,7 @@ async function seedDatabase() {
 
     for (let i = 0; i < events.length; i++) {
       // Get the correct source based on the event's venue
-      const sourceIndex = venueToSourceMap[events[i].venueId] || (i % sources.length)
+      const sourceIndex = (venueToSourceMap[events[i].venueId] as number | undefined) ?? (i % sources.length)
       const sourceId = sources[sourceIndex].id
       await prisma.eventSource.create({
         data: {
